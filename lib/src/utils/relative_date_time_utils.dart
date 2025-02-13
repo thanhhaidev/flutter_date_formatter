@@ -8,12 +8,14 @@ class RelativeDateTimeUtils {
   /// using the specified [locale].
   /// If [allowFromNow] is true, it allows formatting for future dates.
   /// If [short] is true, it uses a shorter format.
+  /// If [withPrefixAndSuffix] is false, it omits the prefix and suffix.
   static String format(
     DateTime datetime,
     DateTime clock,
     Locale locale, {
     bool allowFromNow = false,
     bool short = false,
+    bool withPrefixAndSuffix = true,
   }) {
     // Calculate the elapsed time in milliseconds.
     var elapsed =
@@ -69,8 +71,12 @@ class RelativeDateTimeUtils {
     }
 
     // Combine the prefix, result, and suffix into the final formatted string.
-    return [prefix, result, suffix]
-        .where((str) => str.isNotEmpty)
-        .join(relativeDateTime.wordSeparator());
+    if (withPrefixAndSuffix) {
+      return [prefix, result, suffix]
+          .where((str) => str.isNotEmpty)
+          .join(relativeDateTime.wordSeparator());
+    }
+
+    return result;
   }
 }
