@@ -9,6 +9,9 @@ class KmLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => 'ទី$n';
+
+  @override
   RelativeDateTime relativeDateTime() => KmRelativeDateTime();
 
   @override

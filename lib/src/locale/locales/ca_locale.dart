@@ -6,7 +6,18 @@ class CaLocale extends Locale {
   String code() => 'ca';
 
   @override
-  String ordinal(int n) {
+  String ordinal(int n) => _getOrdinalSuffix(n);
+
+  @override
+  String ordinalNumber(int n) => '$n${_getOrdinalSuffix(n)}';
+
+  @override
+  RelativeDateTime relativeDateTime() => CaRelativeDateTime();
+
+  @override
+  RelativeDateTime shortRelativeDateTime() => CaShortRelativeDateTime();
+
+  String _getOrdinalSuffix(int n) {
     String ord;
     if (n == 1 || n == 3) {
       ord = 'r';
@@ -19,12 +30,6 @@ class CaLocale extends Locale {
     }
     return ord;
   }
-
-  @override
-  RelativeDateTime relativeDateTime() => CaRelativeDateTime();
-
-  @override
-  RelativeDateTime shortRelativeDateTime() => CaShortRelativeDateTime();
 }
 
 /// Catalan relative date time

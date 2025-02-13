@@ -9,6 +9,9 @@ class KuLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => '${n}th';
+
+  @override
   RelativeDateTime relativeDateTime() => KuRelativeDateTime();
 
   @override

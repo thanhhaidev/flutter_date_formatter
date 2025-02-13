@@ -9,6 +9,9 @@ class AzLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => "$n'inci";
+
+  @override
   RelativeDateTime relativeDateTime() => AzRelativeDateTime();
 
   @override

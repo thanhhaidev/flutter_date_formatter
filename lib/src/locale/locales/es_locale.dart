@@ -9,6 +9,9 @@ class EsLocale extends Locale {
   String ordinal(int n) => 'º';
 
   @override
+  String ordinalNumber(int n) => '$n.º';
+
+  @override
   RelativeDateTime relativeDateTime() => EsRelativeTime();
 
   @override

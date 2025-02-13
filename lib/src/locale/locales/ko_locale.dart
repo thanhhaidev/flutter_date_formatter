@@ -9,6 +9,9 @@ class KoLocale extends Locale {
   String ordinal(int n) => '일';
 
   @override
+  String ordinalNumber(int n) => '$n번째';
+
+  @override
   RelativeDateTime relativeDateTime() => KoRelativeDateTime();
 
   @override

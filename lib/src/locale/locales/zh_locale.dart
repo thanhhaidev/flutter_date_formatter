@@ -9,6 +9,9 @@ class ZhLocale extends Locale {
   String ordinal(int n) => '日';
 
   @override
+  String ordinalNumber(int n) => '第$n';
+
+  @override
   RelativeDateTime relativeDateTime() => ZhRelativeDateTime();
 
   @override
@@ -19,6 +22,9 @@ class ZhLocale extends Locale {
 class ZhCnLocale extends ZhLocale {
   @override
   String code() => 'zh_CN';
+
+  @override
+  String ordinalNumber(int n) => '$n';
 
   @override
   RelativeDateTime relativeDateTime() => ZhCnRelativeDateTime();

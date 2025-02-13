@@ -9,6 +9,9 @@ class BsLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => '$n.';
+
+  @override
   RelativeDateTime relativeDateTime() => BsRelativeDateTime();
 
   @override

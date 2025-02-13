@@ -9,6 +9,9 @@ class MnLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => '${n}th';
+
+  @override
   RelativeDateTime relativeDateTime() => MnRelativeDateTime();
 
   @override

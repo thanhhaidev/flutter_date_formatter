@@ -12,6 +12,12 @@ class FrLocale extends Locale {
   }
 
   @override
+  String ordinalNumber(int n) {
+    final ord = n == 1 ? 'er' : 'e';
+    return ord;
+  }
+
+  @override
   RelativeDateTime relativeDateTime() => FrRelativeDateTime();
 
   @override

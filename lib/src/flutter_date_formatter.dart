@@ -61,20 +61,18 @@ class FlutterDateFormatter {
     bool short = false,
     bool withPrefixAndSuffix = true,
   }) {
-    late Locale locale0;
-    if (locale != null && SupportedLocalesUtils.isLocaleSupported(locale)) {
-      locale0 = SupportedLocalesUtils.getLocale(locale);
-    } else {
-      locale0 = EnLocale();
-    }
-
     return RelativeDateTimeUtils.format(
       datetime,
       clock ?? DateTime.now(),
-      locale0,
+      SupportedLocalesUtils.getLocale(locale),
       allowFromNow: allowFromNow,
       short: short,
       withPrefixAndSuffix: withPrefixAndSuffix,
     );
+  }
+
+  /// Returns the ordinal number for the given [n] in the specified [locale].
+  static String ordinal(int n, {String? locale}) {
+    return SupportedLocalesUtils.getLocale(locale).ordinalNumber(n);
   }
 }

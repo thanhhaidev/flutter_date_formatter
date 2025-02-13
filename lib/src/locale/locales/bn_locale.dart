@@ -1,4 +1,5 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
+import 'package:intl/intl.dart';
 
 /// Bengali locale
 class BnLocale extends Locale {
@@ -7,6 +8,9 @@ class BnLocale extends Locale {
 
   @override
   String ordinal(int n) => '';
+
+  @override
+  String ordinalNumber(int n) => NumberFormat.compact(locale: 'bn').format(n);
 
   @override
   RelativeDateTime relativeDateTime() => BnRelativeDateTime();
@@ -38,16 +42,18 @@ class BnRelativeDateTime implements RelativeDateTime {
   @override
   String aDay(int hours) => 'এক দিন';
   @override
-  String days(int days) => '${_convertToBanglaNumbers(days.toString())} দিন';
+  String days(int days) =>
+      '${NumberFormat.compact(locale: 'bn').format(days)} দিন';
   @override
   String aboutAMonth(int days) => 'প্রায় এক মাস';
   @override
   String months(int months) =>
-      '${_convertToBanglaNumbers(months.toString())} মাস';
+      '${NumberFormat.compact(locale: 'bn').format(months)} মাস';
   @override
   String aboutAYear(int year) => 'প্রায় এক বছর';
   @override
-  String years(int years) => '${_convertToBanglaNumbers(years.toString())} বছর';
+  String years(int years) =>
+      '${NumberFormat.compact(locale: 'bn').format(years)} বছর';
   @override
   String wordSeparator() => ' ';
 }
@@ -68,42 +74,27 @@ class BnShortRelativeDateTime implements RelativeDateTime {
   String aboutAMinute(int minutes) => '১মিনিট ';
   @override
   String minutes(int minutes) =>
-      '${_convertToBanglaNumbers(minutes.toString())}মিনিট';
+      '${NumberFormat.compact(locale: 'bn').format(minutes)}মিনিট';
   @override
   String aboutAnHour(int minutes) => '~১ঘন্টা';
   @override
   String hours(int hours) =>
-      '${_convertToBanglaNumbers(hours.toString())}ঘন্টা';
+      '${NumberFormat.compact(locale: 'bn').format(hours)}ঘন্টা';
   @override
   String aDay(int hours) => '~১দি';
   @override
-  String days(int days) => '${_convertToBanglaNumbers(days.toString())}দি';
+  String days(int days) =>
+      '${NumberFormat.compact(locale: 'bn').format(days)}দি';
   @override
   String aboutAMonth(int days) => '~১মাস';
   @override
   String months(int months) =>
-      '${_convertToBanglaNumbers(months.toString())}মাস';
+      '${NumberFormat.compact(locale: 'bn').format(months)}মাস';
   @override
   String aboutAYear(int year) => '~১বছর';
   @override
-  String years(int years) => '${_convertToBanglaNumbers(years.toString())}বছর';
+  String years(int years) =>
+      '${NumberFormat.compact(locale: 'bn').format(years)}বছর';
   @override
   String wordSeparator() => ' ';
-}
-
-String _convertToBanglaNumbers(String input) {
-  const banglaDigits = <String, String>{
-    '0': '০',
-    '1': '১',
-    '2': '২',
-    '3': '৩',
-    '4': '৪',
-    '5': '৫',
-    '6': '৬',
-    '7': '৭',
-    '8': '৮',
-    '9': '৯',
-  };
-
-  return input.split('').map((char) => banglaDigits[char] ?? char).join();
 }

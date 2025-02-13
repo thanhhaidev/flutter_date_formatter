@@ -20,6 +20,7 @@ class ReplaceUtils {
     var pattern = input;
 
     while (matches.isNotEmpty) {
+      print('localeOrdinal: $localeOrdinal');
       final match = matches.first;
       pattern = pattern.replaceRange(
         match.start,

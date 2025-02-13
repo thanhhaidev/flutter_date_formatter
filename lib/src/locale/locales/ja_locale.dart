@@ -9,6 +9,9 @@ class JaLocale extends Locale {
   String ordinal(int n) => '日';
 
   @override
+  String ordinalNumber(int n) => '第$n';
+
+  @override
   RelativeDateTime relativeDateTime() => JaRelativeDateTime();
 
   @override

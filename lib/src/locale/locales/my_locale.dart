@@ -10,6 +10,10 @@ class MyLocale extends Locale {
   String ordinal(int n) => '.';
 
   @override
+  String ordinalNumber(int n) =>
+      '${NumberFormat.compact(locale: 'my').format(n)}.';
+
+  @override
   RelativeDateTime relativeDateTime() => MyRelativeDateTime();
 
   @override

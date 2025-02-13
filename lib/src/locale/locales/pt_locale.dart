@@ -9,6 +9,9 @@ class PtLocale extends Locale {
   String ordinal(int n) => 'º';
 
   @override
+  String ordinalNumber(int n) => '$nº';
+
+  @override
   RelativeDateTime relativeDateTime() => PtRelativeDateTime();
 
   @override

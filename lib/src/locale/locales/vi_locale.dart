@@ -9,6 +9,9 @@ class ViLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => 'thứ $n';
+
+  @override
   RelativeDateTime relativeDateTime() => ViRelativeTime();
 
   @override

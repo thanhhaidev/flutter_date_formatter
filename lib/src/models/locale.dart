@@ -11,6 +11,9 @@ abstract class Locale {
   /// (For example, "st", "nd", "rd", "th").
   String ordinal(int n);
 
+  /// Returns the ordinal number for the given number [n].
+  String ordinalNumber(int n);
+
   /// Returns a [RelativeDateTime] instance for this locale.
   ///
   /// A [RelativeDateTime] instance encapsulates the rules for formatting

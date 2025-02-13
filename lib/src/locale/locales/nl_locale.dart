@@ -11,6 +11,9 @@ class NlLocale extends Locale {
   }
 
   @override
+  String ordinalNumber(int n) => '${n}e';
+
+  @override
   RelativeDateTime relativeDateTime() => NlRelativeDateTime();
 
   @override

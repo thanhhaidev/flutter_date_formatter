@@ -6,17 +6,22 @@ class SvLocale extends Locale {
   String code() => 'sv';
 
   @override
-  String ordinal(int n) {
-    final b = n % 10;
-    final ord = (b == 1) || (b == 2) ? 'a' : 'e';
-    return ord;
-  }
+  String ordinal(int n) => _getOrdinalSuffix(n);
+
+  @override
+  String ordinalNumber(int n) => '$n:${_getOrdinalSuffix(n)}';
 
   @override
   RelativeDateTime relativeDateTime() => SvRelativeDateTime();
 
   @override
   RelativeDateTime shortRelativeDateTime() => SvShortRelativeDateTime();
+
+  String _getOrdinalSuffix(int n) {
+    final b = n % 10;
+    final ord = (b == 1 || b == 2) ? 'a' : 'e';
+    return ord;
+  }
 }
 
 /// Swedish relative date time

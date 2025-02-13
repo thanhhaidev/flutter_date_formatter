@@ -9,6 +9,9 @@ class ThLocale extends Locale {
   String ordinal(int n) => '.';
 
   @override
+  String ordinalNumber(int n) => 'ที่ $n';
+
+  @override
   RelativeDateTime relativeDateTime() => ThRelativeDateTime();
 
   @override

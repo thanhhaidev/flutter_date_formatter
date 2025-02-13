@@ -9,6 +9,9 @@ class RoLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
+  String ordinalNumber(int n) => '${n}a';
+
+  @override
   RelativeDateTime relativeDateTime() => RoRelativeDateTime();
 
   @override

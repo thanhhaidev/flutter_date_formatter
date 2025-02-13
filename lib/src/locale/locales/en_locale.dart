@@ -6,19 +6,24 @@ class EnLocale extends Locale {
   String code() => 'en';
 
   @override
-  String ordinal(int n) {
-    const s = ['th', 'st', 'nd', 'rd'];
-    final v = n % 100;
-    final index = (v - 20) % 10;
-    final validIndex = (index >= 0 && index < s.length) ? index : 0;
-    return s[validIndex];
-  }
+  String ordinal(int n) => _getOrdinalSuffix(n);
+
+  @override
+  String ordinalNumber(int n) => '$n${_getOrdinalSuffix(n)}';
 
   @override
   RelativeDateTime relativeDateTime() => EnRelativeTime();
 
   @override
   RelativeDateTime shortRelativeDateTime() => EnShortRelativeTime();
+
+  String _getOrdinalSuffix(int n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    final v = n % 100;
+    final index = (v - 20) % 10;
+    final validIndex = (index >= 0 && index < s.length) ? index : 0;
+    return s[validIndex];
+  }
 }
 
 /// English relative date time

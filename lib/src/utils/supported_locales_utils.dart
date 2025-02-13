@@ -64,8 +64,8 @@ class SupportedLocalesUtils {
   };
 
   /// Returns a [Locale] instance for the given locale code.
-  static Locale getLocale(String locale) {
-    return _supportedLocales[locale.toLowerCase()] ?? _supportedLocales['en']!;
+  static Locale getLocale(String? locale) {
+    return _supportedLocales[locale?.toLowerCase()] ?? _supportedLocales['en']!;
   }
 
   /// Returns `true` if the given locale is supported.

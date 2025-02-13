@@ -9,6 +9,9 @@ class IdLocale extends Locale {
   String ordinal(int n) => '.';
 
   @override
+  String ordinalNumber(int n) => 'ke-$n';
+
+  @override
   RelativeDateTime relativeDateTime() => IdRelativeDateTime();
 
   @override

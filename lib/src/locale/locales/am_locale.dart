@@ -6,7 +6,10 @@ class AmLocale extends Locale {
   String code() => 'am';
 
   @override
-  String ordinal(int n) => '$nኛ';
+  String ordinal(int n) => 'ኛ';
+
+  @override
+  String ordinalNumber(int n) => '$nኛ';
 
   @override
   RelativeDateTime relativeDateTime() => AmRelativeDateTime();

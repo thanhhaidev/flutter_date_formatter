@@ -70,8 +70,8 @@ You can get the ordinal representation of a number using the `ordinal` method in
 
 ```dart
 int number = 1;
-String ordinal = EnLocale().ordinal(number);
-print(ordinal); // Output: st
+String ordinal = FlutterDateFormatter.ordinal(number, locale: 'en');
+print(ordinal); // Output: 1st
 ```
 
 ### Supported Locales
