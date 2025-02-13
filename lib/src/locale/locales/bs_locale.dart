@@ -15,7 +15,7 @@ class BsLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => BsShortRelativeDateTime();
 }
 
-/// Bosnian locale
+/// Bosnian relative date time
 class BsRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => 'prije';
@@ -51,7 +51,7 @@ class BsRelativeDateTime implements RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// Bosnian short locale
+/// Bosnian short relative date time
 class BsShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

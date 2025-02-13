@@ -1,6 +1,6 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
-/// A class that represents the Belarusian locale.
+/// Belarusian locale.
 class BeLocale extends Locale {
   @override
   String code() => 'be';
@@ -15,7 +15,7 @@ class BeLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => BeShortRelativeDateTime();
 }
 
-/// A class that represents the Belarusian locale.
+/// Belarusian relative date time
 class BeRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';
@@ -103,7 +103,7 @@ class BeRelativeDateTime implements RelativeDateTime {
   }
 }
 
-/// A class that represents the Belarusian short locale.
+/// Belarusian short relative date time
 class BeShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

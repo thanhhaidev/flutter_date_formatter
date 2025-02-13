@@ -123,7 +123,7 @@ class ArShortRelativeDateTime implements RelativeDateTime {
   @override
   String lessThanOneMinute(int seconds) => '$seconds ثا';
   @override
-  String aboutAMinute(int minutes) => '~1 د';
+  String aboutAMinute(int minutes) => '~د ١';
   @override
   String minutes(int minutes) => '$minutes د';
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
-/// A class that represents the Spanish locale.
+/// Spanish locale
 class EsLocale extends Locale {
   @override
   String code() => 'es';
@@ -12,10 +12,10 @@ class EsLocale extends Locale {
   RelativeDateTime relativeDateTime() => EsRelativeTime();
 
   @override
-  RelativeDateTime shortRelativeDateTime() => EsRelativeTime();
+  RelativeDateTime shortRelativeDateTime() => EsShortRelativeTime();
 }
 
-/// A class that formats relative date/time values for the Spanish locale.
+/// Spanish relative date time
 class EsRelativeTime extends RelativeDateTime {
   @override
   String prefixAgo() => 'hace';
@@ -45,6 +45,42 @@ class EsRelativeTime extends RelativeDateTime {
   String months(int months) => '$months meses';
   @override
   String aboutAYear(int year) => 'un año';
+  @override
+  String years(int years) => '$years años';
+  @override
+  String wordSeparator() => ' ';
+}
+
+/// Spanish short relative date time
+class EsShortRelativeTime extends RelativeDateTime {
+  @override
+  String prefixAgo() => '';
+  @override
+  String prefixFromNow() => '';
+  @override
+  String suffixAgo() => '';
+  @override
+  String suffixFromNow() => '';
+  @override
+  String lessThanOneMinute(int seconds) => 'ahora';
+  @override
+  String aboutAMinute(int minutes) => '1 min';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String aboutAnHour(int minutes) => '~1 hr';
+  @override
+  String hours(int hours) => '$hours hr';
+  @override
+  String aDay(int hours) => '~1 día';
+  @override
+  String days(int days) => '$days días';
+  @override
+  String aboutAMonth(int days) => '~1 mes';
+  @override
+  String months(int months) => '$months meses';
+  @override
+  String aboutAYear(int year) => '~1 año';
   @override
   String years(int years) => '$years años';
   @override

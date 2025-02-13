@@ -15,7 +15,7 @@ class DaLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => DaShortRelativeDateTime();
 }
 
-/// Danish locale
+/// Danish relative date time
 class DaRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';
@@ -51,7 +51,7 @@ class DaRelativeDateTime implements RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// Danish short locale
+/// Danish short relative date time
 class DaShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

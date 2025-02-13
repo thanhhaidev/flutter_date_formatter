@@ -74,6 +74,59 @@ String ordinal = EnLocale().ordinal(number);
 print(ordinal); // Output: st
 ```
 
+### Supported Locales
+
+The package supports multiple locales. Here is a list of all supported locales:
+
+- `am` - Amharic
+- `ar` - Arabic
+- `az` - Azerbaijani
+- `be` - Belarusian
+- `bn` - Bengali
+- `bs` - Bosnian
+- `ca` - Catalan
+- `cs` - Czech
+- `da` - Danish
+- `de` - German
+- `dv` - Divehi
+- `en` - English
+- `es` - Spanish
+- `et` - Estonian
+- `fa` - Persian
+- `fi` - Finnish
+- `fr` - French
+- `gr` - Greek
+- `he` - Hebrew
+- `hi` - Hindi
+- `hr` - Croatian
+- `hu` - Hungarian
+- `id` - Indonesian
+- `it` - Italian
+- `ja` - Japanese
+- `ka` - Georgian
+- `km` - Khmer
+- `ko` - Korean
+- `ku` - Kurdish
+- `lv` - Latvian
+- `mn` - Mongolian
+- `ms_my` - Malay
+- `my` - Burmese
+- `nb` - Norwegian Bokmål
+- `nl` - Dutch
+- `nn` - Norwegian Nynorsk
+- `pl` - Polish
+- `ps` - Pashto
+- `pt` - Portuguese
+- `ro` - Romanian
+- `ru` - Russian
+- `sv` - Swedish
+- `th` - Thai
+- `tl_PH` - Filipino
+- `tr` - Turkish
+- `uk` - Ukrainian
+- `vi` - Vietnamese
+- `zh` - Chinese
+
 ## Contributing 🤝
 
 Contributions are welcome! Please open an issue or submit a pull request.

@@ -27,7 +27,7 @@ class CaLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => CaShortRelativeDateTime();
 }
 
-/// Catalan locale
+/// Catalan relative date time
 class CaRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => 'fa';
@@ -63,7 +63,7 @@ class CaRelativeDateTime implements RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// Catalan short locale
+/// Catalan short relative date time
 class CaShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

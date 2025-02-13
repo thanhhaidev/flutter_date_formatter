@@ -1,6 +1,6 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
-/// A class that represents the Bengali locale.
+/// Bengali locale
 class BnLocale extends Locale {
   @override
   String code() => 'bn';
@@ -15,7 +15,7 @@ class BnLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => BnShortRelativeDateTime();
 }
 
-/// A class that represents the Bengali locale.
+/// Bengali relative date time
 class BnRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';
@@ -28,30 +28,31 @@ class BnRelativeDateTime implements RelativeDateTime {
   @override
   String lessThanOneMinute(int seconds) => 'কিছুক্ষন';
   @override
-  String aboutAMinute(int minutes) => 'এক মিনিট';
+  String aboutAMinute(int minutes) => 'প্রায় এক মিনিট';
   @override
   String minutes(int minutes) => '$minutes মিনিট';
   @override
-  String aboutAnHour(int minutes) => 'এক ঘন্টা';
+  String aboutAnHour(int minutes) => 'প্রায় এক ঘন্টা';
   @override
   String hours(int hours) => '$hours ঘন্টা';
   @override
   String aDay(int hours) => 'এক দিন';
   @override
-  String days(int days) => '$days দিন';
+  String days(int days) => '${_convertToBanglaNumbers(days.toString())} দিন';
   @override
-  String aboutAMonth(int days) => 'এক মাস';
+  String aboutAMonth(int days) => 'প্রায় এক মাস';
   @override
-  String months(int months) => '$months মাস';
+  String months(int months) =>
+      '${_convertToBanglaNumbers(months.toString())} মাস';
   @override
-  String aboutAYear(int year) => 'এক বছর';
+  String aboutAYear(int year) => 'প্রায় এক বছর';
   @override
-  String years(int years) => '$years বছর';
+  String years(int years) => '${_convertToBanglaNumbers(years.toString())} বছর';
   @override
   String wordSeparator() => ' ';
 }
 
-/// A class that represents the Bengali short locale.
+/// Bengali short relative date time
 class BnShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';
@@ -64,25 +65,45 @@ class BnShortRelativeDateTime implements RelativeDateTime {
   @override
   String lessThanOneMinute(int seconds) => 'এখন';
   @override
-  String aboutAMinute(int minutes) => '1মিনিট';
+  String aboutAMinute(int minutes) => '১মিনিট ';
   @override
-  String minutes(int minutes) => '$minutesমাস';
+  String minutes(int minutes) =>
+      '${_convertToBanglaNumbers(minutes.toString())}মিনিট';
   @override
-  String aboutAnHour(int minutes) => '~1ঘন্টা';
+  String aboutAnHour(int minutes) => '~১ঘন্টা';
   @override
-  String hours(int hours) => '$hoursঘন্টা';
+  String hours(int hours) =>
+      '${_convertToBanglaNumbers(hours.toString())}ঘন্টা';
   @override
-  String aDay(int hours) => '~1দিন';
+  String aDay(int hours) => '~১দি';
   @override
-  String days(int days) => '$daysদিন';
+  String days(int days) => '${_convertToBanglaNumbers(days.toString())}দি';
   @override
-  String aboutAMonth(int days) => '~1মাস';
+  String aboutAMonth(int days) => '~১মাস';
   @override
-  String months(int months) => '$monthsমাস';
+  String months(int months) =>
+      '${_convertToBanglaNumbers(months.toString())}মাস';
   @override
-  String aboutAYear(int year) => '~1বছর';
+  String aboutAYear(int year) => '~১বছর';
   @override
-  String years(int years) => '$yearsবছর';
+  String years(int years) => '${_convertToBanglaNumbers(years.toString())}বছর';
   @override
   String wordSeparator() => ' ';
+}
+
+String _convertToBanglaNumbers(String input) {
+  const banglaDigits = <String, String>{
+    '0': '০',
+    '1': '১',
+    '2': '২',
+    '3': '৩',
+    '4': '৪',
+    '5': '৫',
+    '6': '৬',
+    '7': '৭',
+    '8': '৮',
+    '9': '৯',
+  };
+
+  return input.split('').map((char) => banglaDigits[char] ?? char).join();
 }

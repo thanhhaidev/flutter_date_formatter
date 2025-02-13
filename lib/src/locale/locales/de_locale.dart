@@ -1,6 +1,6 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
-/// A class that represents the German locale.
+/// German locale
 class DeLocale extends Locale {
   @override
   String code() => 'de';
@@ -15,7 +15,7 @@ class DeLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => DeShortRelativeDateTime();
 }
 
-/// German locale
+/// German relative date time
 class DeRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => 'vor';
@@ -51,7 +51,7 @@ class DeRelativeDateTime implements RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// German short locale
+/// German short relative date time
 class DeShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

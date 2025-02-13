@@ -15,7 +15,7 @@ class CsLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => CsShortRelativeDateTime();
 }
 
-/// Czech locale
+/// Czech relative date time
 class CsRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => 'před';
@@ -54,7 +54,7 @@ class CsRelativeDateTime implements RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// Czech short locale
+/// Czech short relative date time
 class CsShortRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

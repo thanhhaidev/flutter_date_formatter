@@ -1,6 +1,6 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
-/// A class that represents the English locale.
+/// English locale
 class EnLocale extends Locale {
   @override
   String code() => 'en';
@@ -21,7 +21,7 @@ class EnLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => EnShortRelativeTime();
 }
 
-/// A class that formats relative date/time values for the English locale.
+/// English relative date time
 class EnRelativeTime extends RelativeDateTime {
   @override
   String prefixAgo() => '';
@@ -57,7 +57,7 @@ class EnRelativeTime extends RelativeDateTime {
   String wordSeparator() => ' ';
 }
 
-/// A class that represents the English locale.
+/// English short relative date time
 class EnShortRelativeTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';

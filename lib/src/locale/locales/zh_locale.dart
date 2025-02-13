@@ -18,7 +18,7 @@ class ZhLocale extends Locale {
 /// Chinese-CN locale
 class ZhCnLocale extends ZhLocale {
   @override
-  String code() => 'zh_cn';
+  String code() => 'zh_CN';
 
   @override
   RelativeDateTime relativeDateTime() => ZhCnRelativeDateTime();
