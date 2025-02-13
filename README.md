@@ -71,7 +71,7 @@ You can get the ordinal representation of a number using the `ordinal` method in
 ```dart
 int number = 1;
 String ordinal = EnLocale().ordinal(number);
-print(ordinal); // Output: 1st
+print(ordinal); // Output: st
 ```
 
 ## Contributing 🤝
