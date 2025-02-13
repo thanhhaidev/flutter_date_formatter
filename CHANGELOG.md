@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Fix bug `withPrefixAndSuffix` param not working
+
 ## 0.0.2
 
 - Add `withPrefixAndSuffix` param for `formatRelativeDateTime` function

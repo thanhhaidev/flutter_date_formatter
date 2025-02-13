@@ -74,6 +74,7 @@ class FlutterDateFormatter {
       locale0,
       allowFromNow: allowFromNow,
       short: short,
+      withPrefixAndSuffix: withPrefixAndSuffix,
     );
   }
 }
