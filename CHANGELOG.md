@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Remove print log
+
 ## 0.0.4
 
 - Add `ordinal` function returns the ordinal number for the given [n] in the specified [locale]
