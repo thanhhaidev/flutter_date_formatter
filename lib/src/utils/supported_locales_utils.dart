@@ -1,5 +1,6 @@
 import 'package:flutter_date_formatter/src/locale/locale.dart';
 import 'package:flutter_date_formatter/src/models/locale.dart';
+import 'package:intl/intl.dart';
 
 /// A utility class that provides helper methods for supported locales.
 class SupportedLocalesUtils {
@@ -64,8 +65,24 @@ class SupportedLocalesUtils {
   };
 
   /// Returns a [Locale] instance for the given locale code.
+  /// If the given locale is not supported, it will return the default locale.
+  /// If the given locale is null, it will return the default locale.
+  /// If the given locale is empty, it will return the default locale.
+  /// If the given locale is not found, it will return the default locale.
+  /// If the given locale is found, it will return the locale.
+  /// If the given locale is found, but the country code is not found, it will
+  /// return the locale without the country code.
   static Locale getLocale(String? locale) {
-    return _supportedLocales[locale?.toLowerCase()] ?? _supportedLocales['en']!;
+    final defaultLocale = locale ?? Intl.defaultLocale;
+
+    final defaultLocaleSupport = _supportedLocales['en']!;
+    if (defaultLocale != null && defaultLocale.isNotEmpty) {
+      final finalLocale = defaultLocale.split('_').first;
+      return _supportedLocales[locale] ??
+          _supportedLocales[finalLocale] ??
+          defaultLocaleSupport;
+    }
+    return defaultLocaleSupport;
   }
 
   /// Returns `true` if the given locale is supported.

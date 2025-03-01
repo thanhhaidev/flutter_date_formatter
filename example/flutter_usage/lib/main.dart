@@ -45,10 +45,18 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Formatted Date (en):',
+              'Formatted Date (default system):',
             ),
             Text(
-              FlutterDateFormatter('do MMMM yyyy', 'en').format(DateTime.now()),
+              FlutterDateFormatter('do MMMM yyyy').format(DateTime.now()),
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Formatted Date (ar):',
+            ),
+            Text(
+              FlutterDateFormatter('do MMMM yyyy', 'ar').format(DateTime.now()),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 20),
@@ -58,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               FlutterDateFormatter.formatRelativeDateTime(
                 DateTime.now().subtract(Duration(days: 5)),
-                locale: 'en',
+                locale: 'ar',
               ),
               style: Theme.of(context).textTheme.headlineMedium,
             ),

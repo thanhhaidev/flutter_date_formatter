@@ -1,4 +1,3 @@
-import 'package:flutter_date_formatter/src/locale/locale.dart';
 import 'package:flutter_date_formatter/src/models/models.dart';
 import 'package:flutter_date_formatter/src/utils/utils.dart';
 import 'package:intl/intl.dart';
@@ -7,11 +6,7 @@ import 'package:intl/intl.dart';
 class FlutterDateFormatter {
   /// Creates a new instance of [FlutterDateFormatter].
   FlutterDateFormatter([String? pattern, String? locale]) {
-    if (locale != null && SupportedLocalesUtils.isLocaleSupported(locale)) {
-      _locale = SupportedLocalesUtils.getLocale(locale);
-    } else {
-      _locale = EnLocale();
-    }
+    _locale = SupportedLocalesUtils.getLocale(locale);
 
     if (pattern != null) {
       _pattern = pattern;
