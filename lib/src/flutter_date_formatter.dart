@@ -42,8 +42,6 @@ class FlutterDateFormatter {
   ///
   /// - If [clock] is passed this will be the point of reference for calculating
   ///   the elapsed time. Defaults to DateTime.now()
-  /// - If [allowFromNow] is passed, format will use the From prefix, ie. a date
-  ///   5 minutes from now in 'en' locale will display as "5 minutes from now"
   /// - If [short] is passed, format will use the short version of the relative
   ///  time, ie. "5m" for 5 minutes
   /// - If [withPrefixAndSuffix] is passed, format will include the prefix and
@@ -52,15 +50,13 @@ class FlutterDateFormatter {
     DateTime datetime, {
     String? locale,
     DateTime? clock,
-    bool allowFromNow = false,
     bool short = false,
     bool withPrefixAndSuffix = true,
   }) {
     return RelativeDateTimeUtils.format(
       datetime,
       clock ?? DateTime.now(),
-      SupportedLocalesUtils.getLocale(locale),
-      allowFromNow: allowFromNow,
+      SupportedLocalesUtils.getRelativeLocale(locale),
       short: short,
       withPrefixAndSuffix: withPrefixAndSuffix,
     );

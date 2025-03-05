@@ -1,7 +1,7 @@
 ## 0.0.6
 
-Get default locale for intl and mapping with supported locale config
-Remove `toLowerCase()` when mapping locale
+- Get default locale for intl and mapping with supported locale config
+- Remove `toLowerCase()` when mapping locale
 
 ## 0.0.5
 

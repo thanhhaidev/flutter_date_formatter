@@ -4,7 +4,6 @@ import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   await initializeDateFormatting();
-
   runApp(const MyApp());
 }
 
@@ -32,81 +31,139 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  DateTime currentDateTime = DateTime.now();
+  late TabController _tabController;
+
+  // List of supported locales
+  final List<String> supportedLocales =
+      SupportedLocalesUtils.getSupportedLocales();
+
+  final List<String> supportedRelativeLocales =
+      SupportedLocalesUtils.getSupportedRelativeLocales()..sort();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController =
+        TabController(length: supportedRelativeLocales.length, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabs: supportedRelativeLocales.map((locale) {
+            return Tab(text: locale);
+          }).toList(),
+        ),
       ),
-      body: Center(
+      body: TabBarView(
+        controller: _tabController,
+        children: supportedRelativeLocales.map((locale) {
+          return _buildLocaleContent(locale);
+        }).toList(),
+      ),
+    );
+  }
+
+  // Helper widget to display formatted date
+  Widget _buildFormattedDateSection(String label, String formattedDate) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 5),
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: Colors.deepPurple[50],
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              formattedDate,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.deepPurple),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Builds the content for each locale tab
+  Widget _buildLocaleContent(String locale) {
+    return SingleChildScrollView(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Formatted Date (default system):',
-            ),
-            Text(
-              FlutterDateFormatter('do MMMM yyyy').format(DateTime.now()),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Date (ar):',
-            ),
-            Text(
-              FlutterDateFormatter('do MMMM yyyy', 'ar').format(DateTime.now()),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Relative Date:',
-            ),
-            Text(
-              FlutterDateFormatter.formatRelativeDateTime(
-                DateTime.now().subtract(Duration(days: 5)),
-                locale: 'ar',
+            // Formatting section
+            if (!supportedLocales.contains(locale))
+              Container(
+                padding: const EdgeInsets.all(12.0),
+                margin: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple[50],
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Text(
+                  'Locale $locale is not supported for formatting. Defaulting to English.',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.deepPurple),
+                ),
               ),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Date (vi):',
-            ),
-            Text(
-              FlutterDateFormatter('do MMMM yyyy', 'vi').format(DateTime.now()),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Relative Date:',
-            ),
-            Text(
-              FlutterDateFormatter.formatRelativeDateTime(
-                DateTime.now().subtract(Duration(days: 5)),
-                locale: 'vi',
+            _buildFormattedDateSection(
+                'Formatted Date:',
+                currentDateTime.format(
+                    pattern: 'do MMMM yyyy', locale: locale)),
+            _buildFormattedDateSection('Relative Time (from now):',
+                currentDateTime.formatFromNow(locale: locale)),
+            _buildFormattedDateSection('Relative Time (to now):',
+                currentDateTime.formatToNow(locale: locale)),
+            _buildFormattedDateSection(
+                'Relative Time (from past):',
+                currentDateTime.formatFrom(
+                    clock: DateTime.now().subDays(1), locale: locale)),
+            _buildFormattedDateSection(
+                'Relative Time (to past):',
+                currentDateTime.formatTo(
+                    clock: DateTime.now().subDays(1), locale: locale)),
+            _buildFormattedDateSection(
+              'Relative Time Short (from past):',
+              currentDateTime.formatFrom(
+                clock: DateTime.now().subDays(1),
+                locale: locale,
+                short: true,
               ),
-              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Date (es):',
-            ),
-            Text(
-              FlutterDateFormatter('do MMMM yyyy', 'es').format(DateTime.now()),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Formatted Relative Date:',
-            ),
-            Text(
-              FlutterDateFormatter.formatRelativeDateTime(
-                DateTime.now().subtract(Duration(days: 5)),
-                locale: 'es',
+            _buildFormattedDateSection(
+              'Relative Time Short (to past):',
+              currentDateTime.formatTo(
+                clock: DateTime.now().subDays(1),
+                locale: locale,
+                short: true,
               ),
-              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
