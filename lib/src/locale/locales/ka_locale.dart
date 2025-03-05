@@ -69,23 +69,23 @@ class KaShortRelativeDateTime implements RelativeDateTime {
   @override
   String aboutAMinute(int minutes) => '1წთ';
   @override
-  String minutes(int minutes) => '${minutes}წთ';
+  String minutes(int minutes) => '$minutesწთ';
   @override
   String aboutAnHour(int minutes) => '~1სთ';
   @override
-  String hours(int hours) => '${hours}სთ';
+  String hours(int hours) => '$hoursსთ';
   @override
   String aDay(int hours) => '~1დღ';
   @override
-  String days(int days) => '${days}დღ';
+  String days(int days) => '$daysდღ';
   @override
   String aboutAMonth(int days) => '~1თვ';
   @override
-  String months(int months) => '${months}თვ';
+  String months(int months) => '$monthsთვ';
   @override
   String aboutAYear(int year) => '~1წ';
   @override
-  String years(int years) => '${years}წ';
+  String years(int years) => '$yearsწ';
   @override
   String wordSeparator() => ' ';
 }

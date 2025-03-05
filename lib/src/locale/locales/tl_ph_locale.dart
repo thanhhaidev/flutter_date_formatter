@@ -102,7 +102,7 @@ String _numToWordsFormatter(int number) {
     'pito',
     'walo',
     'siyam',
-    'sampu'
+    'sampu',
   ];
   const vowels = 'aeiou';
 

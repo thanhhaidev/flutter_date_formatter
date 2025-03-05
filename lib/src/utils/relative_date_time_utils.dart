@@ -1,34 +1,38 @@
+import 'package:flutter_date_formatter/src/enums/unit.dart';
+import 'package:flutter_date_formatter/src/extensions/date_time_ext.dart';
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// A utility class for formatting relative date and time.
 class RelativeDateTimeUtils {
   RelativeDateTimeUtils._();
 
-  /// Formats the given [datetime] relative to the [clock] time
-  /// using the specified [locale].
-  /// If [allowFromNow] is true, it allows formatting for future dates.
-  /// If [short] is true, it uses a shorter format.
-  /// If [withPrefixAndSuffix] is false, it omits the prefix and suffix.
+  /// Formats the difference between two [DateTime] objects
+  /// as a relative time string.
+  ///
+  /// The [firstDateTime] and [secondDateTime] parameters
+  /// specify the two dates to compare.
+  /// The [locale] parameter specifies the locale to use for formatting.
+  /// The [short] parameter specifies whether to use short format.
+  /// The [withPrefixAndSuffix] parameter specifies
+  /// whether to include prefix and suffix.
+  ///
+  /// Returns a [String] representing the relative time difference.
   static String format(
-    DateTime datetime,
-    DateTime clock,
+    DateTime firstDateTime,
+    DateTime secondDateTime,
     Locale locale, {
-    bool allowFromNow = false,
     bool short = false,
     bool withPrefixAndSuffix = true,
   }) {
-    // Calculate the elapsed time in milliseconds.
-    var elapsed =
-        clock.millisecondsSinceEpoch - datetime.millisecondsSinceEpoch;
+    final isFirstDateTimeSameOrAfterSecondDateTime =
+        firstDateTime.isSameOrAfter(secondDateTime);
+
     final relativeDateTime =
         short ? locale.shortRelativeDateTime() : locale.relativeDateTime();
     String prefix;
     String suffix;
 
-    // Determine the prefix and suffix based on
-    // whether the date is in the future or past.
-    if (allowFromNow && elapsed < 0) {
-      elapsed = datetime.isBefore(clock) ? elapsed : elapsed.abs();
+    if (isFirstDateTimeSameOrAfterSecondDateTime) {
       prefix = relativeDateTime.prefixFromNow();
       suffix = relativeDateTime.suffixFromNow();
     } else {
@@ -36,16 +40,26 @@ class RelativeDateTimeUtils {
       suffix = relativeDateTime.suffixAgo();
     }
 
-    // Convert elapsed time to various units.
-    final num seconds = elapsed / 1000;
-    final num minutes = seconds / 60;
-    final num hours = minutes / 60;
-    final num days = hours / 24;
-    final num months = days / 30;
-    final num years = days / 365;
+    final seconds = firstDateTime
+        .diff(secondDateTime, unit: Unit.second, asFloat: true)
+        .abs();
+    final minutes = firstDateTime
+        .diff(secondDateTime, unit: Unit.minute, asFloat: true)
+        .abs();
+    final hours = firstDateTime
+        .diff(secondDateTime, unit: Unit.hour, asFloat: true)
+        .abs();
+    final days =
+        firstDateTime.diff(secondDateTime, unit: Unit.day, asFloat: true).abs();
+    final months = firstDateTime
+        .diff(secondDateTime, unit: Unit.month, asFloat: true)
+        .abs();
+    final years = firstDateTime
+        .diff(secondDateTime, unit: Unit.year, asFloat: true)
+        .abs();
 
-    // Determine the appropriate relative time string based on the elapsed time.
     String result;
+
     if (seconds < 45) {
       result = relativeDateTime.lessThanOneMinute(seconds.round());
     } else if (seconds < 90) {
@@ -70,7 +84,6 @@ class RelativeDateTimeUtils {
       result = relativeDateTime.years(years.round());
     }
 
-    // Combine the prefix, result, and suffix into the final formatted string.
     if (withPrefixAndSuffix) {
       return [prefix, result, suffix]
           .where((str) => str.isNotEmpty)

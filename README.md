@@ -74,9 +74,95 @@ String ordinal = FlutterDateFormatter.ordinal(number, locale: 'en');
 print(ordinal); // Output: 1st
 ```
 
+### DateTime Extensions
+
+The package now includes several new extension methods for the `DateTime` class:
+
+```dart
+DateTime date = DateTime.now();
+print(date.isToday); // Output: true
+
+String pattern = 'do MMMM yyyy';
+String formattedDate = date.format(pattern: pattern, locale: 'en');
+print(formattedDate); // Output: 13th February 2025
+
+DateTime pastDate = now.subtract(Duration(days: 5));
+String formattedRelativeDate = pastDate.formatRelative(
+  locale: 'en',
+);
+print(formattedRelativeDate); // Output: 5 days ago
+```
+
+#### Properties
+
+```dart
+isFuture → bool
+isPast → bool
+isToday → bool
+isYesterday → bool
+isTomorrow → bool
+isLocal → bool
+isWeekend → bool
+isLeapYear → bool
+dayOfWeek → int
+dayOfYear → int
+weekOfYear → int
+quarterOfYear → int
+startOfDay → DateTime
+startOfWeek → DateTime
+startOfMonth → DateTime
+startOfYear → DateTime
+endOfDay → DateTime
+endOfWeek → DateTime
+endOfMonth → DateTime
+endOfYear → DateTime
+```
+
+#### Methods
+
+```dart
+endOf(Unit unit) → DateTime
+startOf(Unit unit) → DateTime
+subYears(int amount) → DateTime
+subMonths(int amount) → DateTime
+subWeeks(int amount) → DateTime
+subDays(int amount) → DateTime
+subHours(int amount) → DateTime
+subMinutes(int amount) → DateTime
+subSeconds(int amount) → DateTime
+subMilliseconds(int amount) → DateTime
+subMicroseconds(int amount) → DateTime
+addMonths(int amount) → DateTime
+addWeeks(int amount) → DateTime
+addDays(int amount) → DateTime
+addHours(int amount) → DateTime
+addMinutes(int amount) → DateTime
+addSeconds(int amount) → DateTime
+addMilliseconds(int amount) → DateTime
+addMicroseconds(int amount) → DateTime
+diff( DateTime other, { Unit unit = Unit.microsecond, bool asFloat = false }) → num
+isSame(DateTime other, {Unit unit = Unit.microsecond}) → bool
+isSameOrBefore(DateTime other, {Unit unit = Unit.microsecond}) → bool
+isSameOrAfter(DateTime other, {Unit unit = Unit.microsecond}) → bool
+isSameDay(DateTime other) → bool
+isSameWeek(DateTime other) → bool
+isSameMonth(DateTime other) → bool
+isSameYear(DateTime other) → bool
+isSameMinute(DateTime other) → bool
+isBetween(DateTime startDateTime, DateTime endDateTime, {Unit unit = Unit.microsecond}) → bool
+format({String? pattern, String? locale}) → String
+formatRelative({String? locale, DateTime? clock, bool allowFromNow = false, bool short = false, bool withPrefixAndSuffix = true}) → String
+formatFrom({required DateTime clock, String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
+formatFromNow({String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
+formatTo({required DateTime clock, String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
+formatToNow({String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
+```
+
 ### Supported Locales
 
 The package supports multiple locales. Here is a list of all supported locales:
+
+#### Formatting & Relative Locales Supported
 
 - `am` - Amharic
 - `ar` - Arabic
@@ -88,14 +174,12 @@ The package supports multiple locales. Here is a list of all supported locales:
 - `cs` - Czech
 - `da` - Danish
 - `de` - German
-- `dv` - Divehi
 - `en` - English
 - `es` - Spanish
 - `et` - Estonian
 - `fa` - Persian
 - `fi` - Finnish
 - `fr` - French
-- `gr` - Greek
 - `he` - Hebrew
 - `hi` - Hindi
 - `hr` - Croatian
@@ -106,14 +190,12 @@ The package supports multiple locales. Here is a list of all supported locales:
 - `ka` - Georgian
 - `km` - Khmer
 - `ko` - Korean
-- `ku` - Kurdish
 - `lv` - Latvian
 - `mn` - Mongolian
 - `ms_my` - Malay
 - `my` - Burmese
 - `nb` - Norwegian Bokmål
 - `nl` - Dutch
-- `nn` - Norwegian Nynorsk
 - `pl` - Polish
 - `ps` - Pashto
 - `pt` - Portuguese
@@ -126,6 +208,15 @@ The package supports multiple locales. Here is a list of all supported locales:
 - `uk` - Ukrainian
 - `vi` - Vietnamese
 - `zh` - Chinese
+
+#### Only Supported Relative Locales
+
+- `dv` - Divehi
+- `gr` - Greek
+- `ku` - Kurdish
+- `nn` - Norwegian Nynorsk
+- `rw` - Kinyarwanda
+- `tk` - Turkish
 
 ## Contributing 🤝
 
