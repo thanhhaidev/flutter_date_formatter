@@ -18,11 +18,13 @@ class EnLocale extends Locale {
   RelativeDateTime shortRelativeDateTime() => EnShortRelativeTime();
 
   String _getOrdinalSuffix(int n) {
-    const s = ['th', 'st', 'nd', 'rd'];
-    final v = n % 100;
-    final index = (v - 20) % 10;
-    final validIndex = (index >= 0 && index < s.length) ? index : 0;
-    return s[validIndex];
+    const ordinals = ['st', 'nd', 'rd', 'th'];
+    var suffix = ordinals.last;
+    final digit = n % 10;
+    if ((digit > 0 && digit < 4) && (n < 11 || n > 13)) {
+      suffix = ordinals[digit - 1];
+    }
+    return suffix;
   }
 }
 
