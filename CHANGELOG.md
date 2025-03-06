@@ -1,3 +1,7 @@
+## 0.0.8
+
+- Fix ordinal for EN locale
+
 ## 0.0.7
 
 - **New Properties**:
