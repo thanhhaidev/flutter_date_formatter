@@ -115,4 +115,9 @@ class SupportedLocalesUtils {
   static List<String> getSupportedRelativeLocales() {
     return _mergedSupportedLocales.keys.toList();
   }
+
+  /// Override and add a new locale to the supported locales.
+  static void registerLocale(String locale, Locale localeInstance) {
+    _supportedLocales[locale] = localeInstance;
+  }
 }
