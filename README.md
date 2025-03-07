@@ -142,7 +142,14 @@ addMinutes(int amount) → DateTime
 addSeconds(int amount) → DateTime
 addMilliseconds(int amount) → DateTime
 addMicroseconds(int amount) → DateTime
-diff( DateTime other, { Unit unit = Unit.microsecond, bool asFloat = false }) → num
+diff(DateTime other, {Unit unit = Unit.microsecond, bool asFloat = false}) → num
+diffInYears(DateTime other, {bool asFloat = false}) → num
+diffInMonths(DateTime other, {bool asFloat = false}) → num
+diffInWeeks(DateTime other, {bool asFloat = false}) → num
+diffInHours(DateTime other, {bool asFloat = false}) → num
+diffInMinutes(DateTime other, {bool asFloat = false}) → num
+diffInSeconds(DateTime other, {bool asFloat = false}) → num
+diffInMilliseconds(DateTime other, {bool asFloat = false}) → num
 isSame(DateTime other, {Unit unit = Unit.microsecond}) → bool
 isSameOrBefore(DateTime other, {Unit unit = Unit.microsecond}) → bool
 isSameOrAfter(DateTime other, {Unit unit = Unit.microsecond}) → bool
