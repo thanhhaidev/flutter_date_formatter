@@ -1,10 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Locale;
 import 'package:flutter_date_formatter/flutter_date_formatter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   await initializeDateFormatting();
+
+  SupportedLocalesUtils.registerLocale('vi', ViLocaleCustom());
+
   runApp(const MyApp());
+}
+
+class ViLocaleCustom extends Locale {
+  @override
+  String code() => 'vi';
+
+  @override
+  String ordinal(int n) => '';
+
+  @override
+  String ordinalNumber(int n) => 'ngày thứ $n';
+
+  @override
+  RelativeDateTime relativeDateTime() => ViRelativeTime();
+
+  @override
+  RelativeDateTime shortRelativeDateTime() => ViShortRelativeTime();
 }
 
 class MyApp extends StatelessWidget {
@@ -164,6 +184,10 @@ class _MyHomePageState extends State<MyHomePage>
                 locale: locale,
                 short: true,
               ),
+            ),
+            _buildFormattedDateSection(
+              'Ordinal Number:',
+              currentDateTime.formatOrdinalNumber(locale: locale),
             ),
           ],
         ),

@@ -114,6 +114,12 @@ extension DateTimeExtensions on DateTime {
   /// Returns the start of the year.
   DateTime get startOfYear => startOf(Unit.year);
 
+  /// Returns the start of the quarter.
+  DateTime get startOfQuarter {
+    final quarter = quarterOfYear;
+    return copyWith(month: (quarter - 1) * 3 + 1).startOfMonth;
+  }
+
   /// Returns the end of the day.
   DateTime get endOfDay => endOf(Unit.day);
 
@@ -125,6 +131,12 @@ extension DateTimeExtensions on DateTime {
 
   /// Returns the end of the year.
   DateTime get endOfYear => endOf(Unit.year);
+
+  /// Returns the end of the quarter.
+  DateTime get endOfQuarter {
+    final quarter = quarterOfYear;
+    return copyWith(month: quarter * 3).endOfMonth;
+  }
 
   /// Returns the start of the specified unit of time.
   DateTime startOf(Unit unit) {
@@ -631,5 +643,10 @@ extension DateTimeFormatExtensions on DateTime {
       short: short,
       withPrefixAndSuffix: withPrefixAndSuffix,
     );
+  }
+
+  /// Formats the DateTime as an ordinal number.
+  String formatOrdinalNumber({String? locale}) {
+    return FlutterDateFormatter.ordinal(day, locale: locale);
   }
 }

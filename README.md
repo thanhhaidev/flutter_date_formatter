@@ -112,10 +112,12 @@ startOfDay → DateTime
 startOfWeek → DateTime
 startOfMonth → DateTime
 startOfYear → DateTime
+startOfQuarter → DateTime
 endOfDay → DateTime
 endOfWeek → DateTime
 endOfMonth → DateTime
 endOfYear → DateTime
+endOfQuarter → DateTime
 ```
 
 #### Methods
@@ -156,6 +158,41 @@ formatFrom({required DateTime clock, String? locale, bool short = false, bool wi
 formatFromNow({String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
 formatTo({required DateTime clock, String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
 formatToNow({String? locale, bool short = false, bool withPrefixAndSuffix = true}) → String
+formatOrdinalNumber({String? locale}) → String
+```
+
+### Register Custom Locales (Add or Override)
+
+You can add or override custom locales in the supported locales list:
+
+```dart
+void main() async {
+  await initializeDateFormatting();
+  // Adding custom locale
+  SupportedLocalesUtils.registerLocale('vi_custom', ViLocaleCustom());
+
+  // Overriding locale
+  SupportedLocalesUtils.registerLocale('vi', ViLocaleCustom());
+}
+
+class ViLocaleCustom extends Locale {
+  @override
+  String code() => 'vi_custom';
+
+  @override
+  String ordinal(int n) => '';
+
+  @override
+  String ordinalNumber(int n) => 'ngày thứ $n';
+
+  // Custom relative time
+  @override
+  RelativeDateTime relativeDateTime() => ViCustomRelativeTime();
+
+  // Custom short relative time
+  @override
+  RelativeDateTime shortRelativeDateTime() => ViCustomShortRelativeTime();
+}
 ```
 
 ### Supported Locales
