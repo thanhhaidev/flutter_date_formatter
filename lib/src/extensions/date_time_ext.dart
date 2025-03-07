@@ -138,6 +138,12 @@ extension DateTimeExtensions on DateTime {
     return copyWith(month: quarter * 3).endOfMonth;
   }
 
+  /// Returns a copy of the DateTime.
+  DateTime clone() => DateTime.fromMillisecondsSinceEpoch(
+        millisecondsSinceEpoch,
+        isUtc: isUtc,
+      );
+
   /// Returns the start of the specified unit of time.
   DateTime startOf(Unit unit) {
     DateTime newDateTime;
@@ -443,6 +449,46 @@ extension DateTimeExtensions on DateTime {
         : diff < 0
             ? diff.ceil()
             : diff.floor();
+  }
+
+  /// Returns the difference between two DateTime objects in years.
+  num diffInYears(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.year, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in months.
+  num diffInMonths(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.month, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in weeks.
+  num diffInWeeks(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.week, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in days.
+  num diffInDays(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.day, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in hours.
+  num diffInHours(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.hour, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in minutes.
+  num diffInMinutes(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.minute, asFloat: asFloat);
+  }
+
+  ///
+  num diffInSeconds(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.second, asFloat: asFloat);
+  }
+
+  /// Returns the difference between two DateTime objects in milliseconds.
+  num diffInMilliseconds(DateTime other, {bool asFloat = false}) {
+    return diff(other, unit: Unit.millisecond, asFloat: asFloat);
   }
 
   /// Checks if the DateTime is before the specified DateTime in the given
