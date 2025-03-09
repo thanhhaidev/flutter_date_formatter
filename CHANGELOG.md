@@ -1,3 +1,21 @@
+## 0.0.9
+
+### **Added**:
+
+- **DateTime Extension: Closest Day and TimeSpan Support**:
+  - Added `indexOfClosestDay` and `closestDayTo` methods to `DateTime` extension.
+  - These methods allow finding the closest day to a given `DateTime` from an iterable of `DateTime` objects.
+- **DateTime Extension: Diff and Clone Methods**:
+
+  - Added `diffInDays`, `diffInSeconds`, and `clone` methods to `DateTime` extension.
+  - `diffInDays`: Calculates the difference between two `DateTime` objects in days.
+  - `diffInSeconds`: Calculates the difference between two `DateTime` objects in seconds.
+  - `clone`: Returns a new `DateTime` object that is a copy of the original.
+
+- **Locale Support**:
+  - Added support for adding or overriding custom locales in the application.
+  - Users can now define their own locales or extend existing ones to suit custom formatting needs.
+
 ## 0.0.8
 
 - Fix ordinal for EN locale
