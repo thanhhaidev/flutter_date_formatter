@@ -123,6 +123,11 @@ endOfQuarter → DateTime
 #### Methods
 
 ```dart
+clone() → DateTime
+indexOfClosestDay(Iterable<DateTime> dates) → int
+closestDayTo(Iterable<DateTime> dates) → DateTime?
+isWithin(DateTime start, DateTime end) → bool
+isWithinTimeSpan(TimeSpan timeSpan) → bool
 endOf(Unit unit) → DateTime
 startOf(Unit unit) → DateTime
 subYears(int amount) → DateTime

@@ -1,5 +1,4 @@
 import 'package:flutter_date_formatter/src/enums/enums.dart';
-import 'package:flutter_date_formatter/src/flutter_date_formatter.dart';
 import 'package:flutter_date_formatter/src/utils/date_time_utils.dart';
 
 /// Extension methods for the [DateTime] class.
@@ -136,6 +135,32 @@ extension DateTimeExtensions on DateTime {
   DateTime get endOfQuarter {
     final quarter = quarterOfYear;
     return copyWith(month: quarter * 3).endOfMonth;
+  }
+
+  /// Get the index of the closest day in the [dates] list.
+  int indexOfClosestDay(Iterable<DateTime> dates) {
+    if (dates.isEmpty) return -1;
+
+    var closest = dates.first;
+    var minDifference = closest.difference(this).inMilliseconds.abs();
+
+    for (final date in dates.skip(1)) {
+      final diff = date.difference(this).inMilliseconds.abs();
+      if (diff < minDifference) {
+        closest = date;
+        minDifference = diff;
+      }
+    }
+
+    // Return the index of the closest date
+    return dates.toList().indexOf(closest);
+  }
+
+  /// Get the closest day to the current one.
+  /// Returns `null` if the list is empty.
+  DateTime? closestDayTo(Iterable<DateTime> dates) {
+    final index = indexOfClosestDay(dates);
+    return index == -1 ? null : dates.elementAt(index);
   }
 
   /// Returns a copy of the DateTime.
@@ -605,94 +630,5 @@ extension DateTimeExtensions on DateTime {
   }) {
     return isAfterDate(startDateTime, unit: unit) &&
         isBeforeDate(endDateTime, unit: unit);
-  }
-}
-
-/// Extension methods for formatting [DateTime] objects.
-extension DateTimeFormatExtensions on DateTime {
-  /// Formats the DateTime according to the specified pattern and locale.
-  String format({String? pattern, String? locale}) {
-    return pattern == null
-        ? toIso8601String()
-        : FlutterDateFormatter(pattern, locale).format(this);
-  }
-
-  /// Formats the DateTime as a relative time.
-  String formatRelative({
-    String? locale,
-    DateTime? clock,
-    bool short = false,
-    bool withPrefixAndSuffix = true,
-  }) {
-    return FlutterDateFormatter.formatRelativeDateTime(
-      this,
-      locale: locale,
-      clock: clock,
-      short: short,
-      withPrefixAndSuffix: withPrefixAndSuffix,
-    );
-  }
-
-  /// Formats the DateTime as a relative time from the clock time.
-  String formatFrom({
-    required DateTime clock,
-    String? locale,
-    bool short = false,
-    bool withPrefixAndSuffix = true,
-  }) {
-    return formatRelative(
-      locale: locale,
-      clock: clock,
-      short: short,
-      withPrefixAndSuffix: withPrefixAndSuffix,
-    );
-  }
-
-  /// Formats the DateTime as a relative time from the current time.
-  String formatFromNow({
-    String? locale,
-    bool short = false,
-    bool withPrefixAndSuffix = true,
-  }) {
-    return formatRelative(
-      clock: DateTime.now(),
-      locale: locale,
-      short: short,
-      withPrefixAndSuffix: withPrefixAndSuffix,
-    );
-  }
-
-  /// Formats the DateTime as a relative time to the clock time.
-  String formatTo({
-    required DateTime clock,
-    String? locale,
-    bool short = false,
-    bool withPrefixAndSuffix = true,
-  }) {
-    return clock.formatRelative(
-      locale: locale,
-      clock: this,
-      short: short,
-      withPrefixAndSuffix: withPrefixAndSuffix,
-    );
-  }
-
-  /// Formats the DateTime as a relative time to the current time.
-  String formatToNow({
-    String? locale,
-    bool short = false,
-    bool withPrefixAndSuffix = true,
-  }) {
-    return DateTime.now().formatRelative(
-      locale: locale,
-      clock: this,
-      short: short,
-      withPrefixAndSuffix: withPrefixAndSuffix,
-    );
-  }
-
-  /// Formats the DateTime as an ordinal number.
-  String formatOrdinalNumber({String? locale}) {
-    return FlutterDateFormatter.ordinal(day, locale: locale);
   }
 }
