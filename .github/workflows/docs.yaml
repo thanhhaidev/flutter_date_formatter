@@ -14,9 +14,11 @@ on:
     paths:
       - 'website/**'
   workflow_dispatch:
-  # Called by the release workflow after publishing, so the changelog shows
-  # the new tag's date and pub.dev link.
-  workflow_call:
+  # After a release is published, so the changelog shows the new tag's date
+  # and pub.dev link. Runs on main, which github-pages accepts.
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
 
 permissions:
   contents: read
@@ -29,6 +31,8 @@ concurrency:
 
 jobs:
   build:
+    # Skip when the release failed.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -1,7 +1,9 @@
 name: Release
 
-# Push a tag such as v0.1.0 to publish that version to pub.dev and redeploy the
-# docs. See RELEASING.md.
+# Push a tag such as v0.1.0 to publish that version to pub.dev. When this
+# workflow succeeds, "Deploy docs" redeploys the site from main (the
+# github-pages environment only accepts deployments from main, not from tags).
+# See RELEASING.md.
 on:
   push:
     tags:
@@ -50,12 +52,3 @@ jobs:
         run: dart pub get
       - name: Publish
         run: dart pub publish --force
-
-  docs:
-    name: Deploy docs
-    needs: publish
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    uses: ./.github/workflows/docs.yaml

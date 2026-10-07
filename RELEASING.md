@@ -3,12 +3,16 @@
 Pushing a version tag does everything: checks, pub.dev publish and docs deploy.
 
 ```
-git tag v0.1.0 ──▶ verify ──▶ CI ──▶ publish to pub.dev ──▶ deploy docs
-                    │          │       (OIDC, no token)       (changelog gets
-                    │          │                               the tag date)
-                    │          └ analyze, tests on 3 OSes, DST time zone, lowest deps
+git tag v0.1.0 ──▶ Release: verify ──▶ CI ──▶ publish to pub.dev (OIDC, no token)
+                    │         │
+                    │         └ analyze, tests on 3 OSes, DST time zone, lowest deps
                     └ tag == pubspec version · CHANGELOG has "## x.y.z" · pub publish --dry-run
+
+Release succeeded ──▶ Deploy docs (runs on main) ──▶ changelog shows the tag date
 ```
+
+The docs deploy runs as a separate workflow on `main` because the `github-pages`
+environment only accepts deployments from `main`, not from tags.
 
 ## One-time setup
 
