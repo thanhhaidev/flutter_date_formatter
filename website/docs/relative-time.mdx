@@ -1,0 +1,34 @@
+---
+title: Relative time
+description: Fuzzy times such as "5 minutes ago" or "in 3 days".
+---
+
+# Relative time
+
+`formatRelative` turns the distance between a date and a reference clock into text such as "5 minutes ago" or "in 3 days", in the past or the future, long or short.
+
+## formatRelative
+
+The `clock` is the reference point. It defaults to now, or to the clock set with [`DateFormatterConfig`](./configuration.mdx). Pick an offset to see one result; the table shows every bucket in the selected locale.
+
+<RelativeDemo />
+
+| Distance | Result (en) |
+| --- | --- |
+| under 45 seconds | a few seconds ago |
+| 45 – 89 seconds | a minute ago |
+| 90 seconds – 44 minutes | 5 minutes ago |
+| 45 – 89 minutes | an hour ago |
+| 90 minutes – 23 hours | 5 hours ago |
+| 24 – 47 hours | a day ago |
+| 2 – 29 days | 5 days ago |
+| 30 – 59 days | a month ago |
+| 2 – 11 months | 5 months ago |
+| 1 – 2 years | a year ago |
+| more | 3 years ago |
+
+Values are rounded before they are compared, so a distance just under a threshold never shows the next bucket's number (no "45 minutes"). Equal dates count as past.
+
+## From / to helpers
+
+<RelativeHelpersDemo />

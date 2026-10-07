@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Belarusian locale.
-class BeLocale extends Locale {
+class BeLocale extends DateFormatterLocale {
   @override
   String code() => 'be';
 
@@ -16,6 +16,15 @@ class BeLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => BeShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => BeCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => BeDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => BeShortDurationUnits();
 }
 
 /// Belarusian relative date time
@@ -29,13 +38,13 @@ class BeRelativeDateTime implements RelativeDateTime {
   @override
   String suffixFromNow() => '';
   @override
-  String lessThanOneMinute(int seconds) => 'хвіліна';
+  String lessThanOneMinute(int seconds) => 'некалькі секунд';
   @override
-  String aboutAMinute(int minutes) => 'хвіліна';
+  String aboutAMinute(int minutes) => 'хвіліну';
   @override
   String minutes(int minutes) => '$minutes ${_convert(minutes, 'minutes')}';
   @override
-  String aboutAnHour(int minutes) => 'гадзіна';
+  String aboutAnHour(int minutes) => 'гадзіну';
   @override
   String hours(int hours) => '$hours ${_convert(hours, 'hours')}';
   @override
@@ -62,7 +71,7 @@ class BeRelativeDateTime implements RelativeDateTime {
         case 'minutes':
           return 'хвіліну';
         case 'hours':
-          return 'гадзіна';
+          return 'гадзіну';
         case 'days':
           return 'дзень';
         case 'months':
@@ -140,4 +149,91 @@ class BeShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years г.';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Belarusian calendar date time
+class BeCalendarDateTime implements CalendarDateTime {
+  /// Weekday names in the accusative case, from Monday to Sunday.
+  static const List<String> _weekdays = [
+    'панядзелак',
+    'аўторак',
+    'сераду',
+    'чацвер',
+    'пятніцу',
+    'суботу',
+    'нядзелю',
+  ];
+
+  @override
+  String sameDay(String time) => 'Сёння ў $time';
+  @override
+  String nextDay(String time) => 'Заўтра ў $time';
+  @override
+  String lastDay(String time) => 'Учора ў $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'У ${_weekdays[date.weekday - 1]} ў $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    final last = switch (date.weekday) {
+      DateTime.monday || DateTime.tuesday || DateTime.thursday => 'мінулы',
+      _ => 'мінулую',
+    };
+    return 'У $last ${_weekdays[date.weekday - 1]} ў $time';
+  }
+}
+
+/// Belarusian duration units
+class BeDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      _plural(seconds, 'секунда', 'секунды', 'секунд');
+  @override
+  String minutes(int minutes) =>
+      _plural(minutes, 'хвіліна', 'хвіліны', 'хвілін');
+  @override
+  String hours(int hours) => _plural(hours, 'гадзіна', 'гадзіны', 'гадзін');
+  @override
+  String days(int days) => _plural(days, 'дзень', 'дні', 'дзён');
+  @override
+  String weeks(int weeks) => _plural(weeks, 'тыдзень', 'тыдні', 'тыдняў');
+  @override
+  String delimiter() => ' ';
+}
+
+/// Belarusian short duration units
+class BeShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds сек.';
+  @override
+  String minutes(int minutes) => '$minutes хв.';
+  @override
+  String hours(int hours) => '$hours гадз.';
+  @override
+  String days(int days) => '$days дн.';
+  @override
+  String weeks(int weeks) => '$weeks тыдз.';
+  @override
+  String delimiter() => ' ';
+}
+
+/// CLDR plural rule for Belarusian (one, few, many).
+String _plural(int n, String one, String few, String many) {
+  final mod10 = n % 10;
+  final mod100 = n % 100;
+  if (mod10 == 1 && mod100 != 11) return '$n $one';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    return '$n $few';
+  }
+  return '$n $many';
 }

@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Finnish Locale
-class FiLocale extends Locale {
+class FiLocale extends DateFormatterLocale {
   @override
   String code() => 'fi';
 
@@ -16,6 +16,15 @@ class FiLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => FiShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => FiCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => FiDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => FiShortDurationUnits();
 }
 
 /// Finnish relative date time
@@ -88,4 +97,78 @@ class FiShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '${years}v:ta';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Finnish calendar date time
+class FiCalendarDateTime implements CalendarDateTime {
+  /// Weekday names in the essive case ("on Monday"), Monday to Sunday.
+  static const List<String> _weekdays = [
+    'maanantaina',
+    'tiistaina',
+    'keskiviikkona',
+    'torstaina',
+    'perjantaina',
+    'lauantaina',
+    'sunnuntaina',
+  ];
+
+  @override
+  String sameDay(String time) => 'Tänään klo $time';
+  @override
+  String nextDay(String time) => 'Huomenna klo $time';
+  @override
+  String lastDay(String time) => 'Eilen klo $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    final day = _weekdays[date.weekday - 1];
+    return '${day[0].toUpperCase()}${day.substring(1)} klo $time';
+  }
+
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Viime ${_weekdays[date.weekday - 1]} klo $time';
+}
+
+/// Finnish duration units
+class FiDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '1 sekunti' : '$seconds sekuntia';
+  @override
+  String minutes(int minutes) =>
+      minutes == 1 ? '1 minuutti' : '$minutes minuuttia';
+  @override
+  String hours(int hours) => hours == 1 ? '1 tunti' : '$hours tuntia';
+  @override
+  String days(int days) => days == 1 ? '1 päivä' : '$days päivää';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 viikko' : '$weeks viikkoa';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Finnish short duration units
+class FiShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds s';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours t';
+  @override
+  String days(int days) => '$days pv';
+  @override
+  String weeks(int weeks) => '$weeks vk';
+  @override
+  String delimiter() => ' ';
 }

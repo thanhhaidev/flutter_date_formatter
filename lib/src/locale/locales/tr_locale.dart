@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Turkish Locale
-class TrLocale extends Locale {
+class TrLocale extends DateFormatterLocale {
   @override
   String code() => 'tr';
 
@@ -16,6 +16,15 @@ class TrLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => TrShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => TrCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => TrDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => TrShortDurationUnits();
 }
 
 /// Turkish relative date time
@@ -88,4 +97,62 @@ class TrShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '${years}y';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Turkish calendar date time
+class TrCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Bugün saat $time';
+  @override
+  String nextDay(String time) => 'Yarın saat $time';
+  @override
+  String lastDay(String time) => 'Dün $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Gelecek $weekday saat $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Geçen $weekday saat $time';
+}
+
+/// Turkish duration units
+class TrDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds saniye';
+  @override
+  String minutes(int minutes) => '$minutes dakika';
+  @override
+  String hours(int hours) => '$hours saat';
+  @override
+  String days(int days) => '$days gün';
+  @override
+  String weeks(int weeks) => '$weeks hafta';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Turkish short duration units
+class TrShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds sn';
+  @override
+  String minutes(int minutes) => '$minutes dk';
+  @override
+  String hours(int hours) => '$hours sa';
+  @override
+  String days(int days) => '$days g';
+  @override
+  String weeks(int weeks) => '$weeks hf';
+  @override
+  String delimiter() => ' ';
 }

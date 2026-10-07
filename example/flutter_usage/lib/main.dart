@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Locale;
+import 'package:flutter/material.dart';
 import 'package:flutter_date_formatter/flutter_date_formatter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -10,21 +10,14 @@ void main() async {
   runApp(const MyApp());
 }
 
-class ViLocaleCustom extends Locale {
-  @override
-  String code() => 'vi';
-
+/// Overrides only the ordinals of the built-in Vietnamese locale; relative,
+/// calendar and duration strings are inherited from [ViLocale].
+class ViLocaleCustom extends ViLocale {
   @override
   String ordinal(int n) => '';
 
   @override
   String ordinalNumber(int n) => 'ngày thứ $n';
-
-  @override
-  RelativeDateTime relativeDateTime() => ViRelativeTime();
-
-  @override
-  RelativeDateTime shortRelativeDateTime() => ViShortRelativeTime();
 }
 
 class MyApp extends StatelessWidget {
@@ -188,6 +181,23 @@ class _MyHomePageState extends State<MyHomePage>
             _buildFormattedDateSection(
               'Ordinal Number:',
               currentDateTime.formatOrdinalNumber(locale: locale),
+            ),
+            _buildFormattedDateSection(
+              'Calendar (yesterday):',
+              currentDateTime.subDays(1).formatCalendar(locale: locale),
+            ),
+            _buildFormattedDateSection(
+              'Calendar (3 days ago):',
+              currentDateTime.subDays(3).formatCalendar(locale: locale),
+            ),
+            _buildFormattedDateSection(
+              'Duration:',
+              const Duration(hours: 2, minutes: 5).humanize(locale: locale),
+            ),
+            _buildFormattedDateSection(
+              'Duration (short):',
+              const Duration(hours: 2, minutes: 5)
+                  .humanize(locale: locale, short: true),
             ),
           ],
         ),

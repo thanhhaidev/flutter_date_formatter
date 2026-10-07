@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Danish locale
-class DaLocale extends Locale {
+class DaLocale extends DateFormatterLocale {
   @override
   String code() => 'da';
 
@@ -16,6 +16,15 @@ class DaLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => DaShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => DaCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => DaDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => DaShortDurationUnits();
 }
 
 /// Danish relative date time
@@ -88,4 +97,63 @@ class DaShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years år';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Danish calendar date time
+class DaCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'I dag kl. $time';
+  @override
+  String nextDay(String time) => 'I morgen kl. $time';
+  @override
+  String lastDay(String time) => 'I går kl. $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'På $weekday kl. $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'I ${weekday}s kl. $time';
+}
+
+/// Danish duration units
+class DaDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '1 sekund' : '$seconds sekunder';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 minut' : '$minutes minutter';
+  @override
+  String hours(int hours) => hours == 1 ? '1 time' : '$hours timer';
+  @override
+  String days(int days) => days == 1 ? '1 dag' : '$days dage';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 uge' : '$weeks uger';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Danish short duration units
+class DaShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds sek.';
+  @override
+  String minutes(int minutes) => '$minutes min.';
+  @override
+  String hours(int hours) => '$hours t.';
+  @override
+  String days(int days) => '$days d.';
+  @override
+  String weeks(int weeks) => '$weeks u.';
+  @override
+  String delimiter() => ' ';
 }

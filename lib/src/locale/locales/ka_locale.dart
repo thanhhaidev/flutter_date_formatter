@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Georgian Locale
-class KaLocale extends Locale {
+class KaLocale extends DateFormatterLocale {
   @override
   String code() => 'ka';
 
@@ -16,6 +16,15 @@ class KaLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => KaShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => KaCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => KaDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => KaShortDurationUnits();
 }
 
 /// Georgian relative date time
@@ -88,4 +97,73 @@ class KaShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$yearsწ';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Georgian calendar date time
+class KaCalendarDateTime implements CalendarDateTime {
+  // Dative weekday names, Monday first ("ორშაბათს").
+  static const _weekdays = [
+    'ორშაბათს',
+    'სამშაბათს',
+    'ოთხშაბათს',
+    'ხუთშაბათს',
+    'პარასკევს',
+    'შაბათს',
+    'კვირას',
+  ];
+
+  @override
+  String sameDay(String time) => 'დღეს $time-ზე';
+  @override
+  String nextDay(String time) => 'ხვალ $time-ზე';
+  @override
+  String lastDay(String time) => 'გუშინ $time-ზე';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'შემდეგ ${_weekdays[date.weekday - 1]} $time-ზე';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'წინა ${_weekdays[date.weekday - 1]} $time-ზე';
+}
+
+/// Georgian duration units
+class KaDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds წამი';
+  @override
+  String minutes(int minutes) => '$minutes წუთი';
+  @override
+  String hours(int hours) => '$hours საათი';
+  @override
+  String days(int days) => '$days დღე';
+  @override
+  String weeks(int weeks) => '$weeks კვირა';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Georgian short duration units
+class KaShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds წმ';
+  @override
+  String minutes(int minutes) => '$minutes წთ';
+  @override
+  String hours(int hours) => '$hours სთ';
+  @override
+  String days(int days) => '$days დღ';
+  @override
+  String weeks(int weeks) => '$weeks კვ';
+  @override
+  String delimiter() => ' ';
 }

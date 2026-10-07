@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Russian Locale
-class RuLocale extends Locale {
+class RuLocale extends DateFormatterLocale {
   @override
   String code() => 'ru';
 
@@ -16,6 +16,15 @@ class RuLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => RuShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => RuCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => RuDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => RuShortDurationUnits();
 }
 
 /// Russian relative date time
@@ -29,7 +38,7 @@ class RuRelativeDateTime implements RelativeDateTime {
   @override
   String suffixFromNow() => '';
   @override
-  String lessThanOneMinute(int seconds) => 'минуту';
+  String lessThanOneMinute(int seconds) => 'несколько секунд';
   @override
   String aboutAMinute(int minutes) => 'минуту';
   @override
@@ -140,4 +149,112 @@ class RuShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years г.';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Russian calendar date time
+class RuCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Сегодня, в $time';
+  @override
+  String nextDay(String time) => 'Завтра, в $time';
+  @override
+  String lastDay(String time) => 'Вчера, в $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    if (isSameWeek) return '${_inWeekday(date)}, в $time';
+    final day = _weekdaysAccusative[date.weekday - 1];
+    final next = switch (date.weekday) {
+      DateTime.sunday => 'следующее',
+      DateTime.wednesday || DateTime.friday || DateTime.saturday => 'следующую',
+      _ => 'следующий',
+    };
+    return 'В $next $day, в $time';
+  }
+
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    if (isSameWeek) return '${_inWeekday(date)}, в $time';
+    final day = _weekdaysAccusative[date.weekday - 1];
+    final last = switch (date.weekday) {
+      DateTime.sunday => 'прошлое',
+      DateTime.wednesday || DateTime.friday || DateTime.saturday => 'прошлую',
+      _ => 'прошлый',
+    };
+    return 'В $last $day, в $time';
+  }
+
+  /// "В среду", "Во вторник".
+  String _inWeekday(DateTime date) {
+    final day = _weekdaysAccusative[date.weekday - 1];
+    return '${date.weekday == DateTime.tuesday ? 'Во' : 'В'} $day';
+  }
+}
+
+/// Russian duration units
+class RuDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      _plural(seconds, 'секунда', 'секунды', 'секунд');
+  @override
+  String minutes(int minutes) => _plural(minutes, 'минута', 'минуты', 'минут');
+  @override
+  String hours(int hours) => _plural(hours, 'час', 'часа', 'часов');
+  @override
+  String days(int days) => _plural(days, 'день', 'дня', 'дней');
+  @override
+  String weeks(int weeks) => _plural(weeks, 'неделя', 'недели', 'недель');
+  @override
+  String delimiter() => ' ';
+}
+
+/// Russian short duration units
+class RuShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds сек.';
+  @override
+  String minutes(int minutes) => '$minutes мин';
+  @override
+  String hours(int hours) => '$hours ч';
+  @override
+  String days(int days) => '$days дн.';
+  @override
+  String weeks(int weeks) => '$weeks нед.';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Russian weekday names in the accusative case, Monday first.
+const _weekdaysAccusative = [
+  'понедельник',
+  'вторник',
+  'среду',
+  'четверг',
+  'пятницу',
+  'субботу',
+  'воскресенье',
+];
+
+/// CLDR plural selection for Russian integers, e.g. "5 минут".
+///
+/// one: n % 10 == 1 && n % 100 != 11
+/// few: n % 10 in 2..4 && n % 100 not in 12..14
+/// many: everything else
+String _plural(int n, String one, String few, String many) {
+  final mod10 = n % 10;
+  final mod100 = n % 100;
+  if (mod10 == 1 && mod100 != 11) return '$n $one';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    return '$n $few';
+  }
+  return '$n $many';
 }

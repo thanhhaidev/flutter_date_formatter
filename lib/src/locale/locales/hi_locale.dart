@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Hindi Locale
-class HiLocale extends Locale {
+class HiLocale extends DateFormatterLocale {
   @override
   String code() => 'hi';
 
@@ -16,6 +16,15 @@ class HiLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => HiShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => HiCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => HiDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => HiShortDurationUnits();
 }
 
 /// Hindi relative date time
@@ -27,7 +36,7 @@ class HiRelativeDateTime implements RelativeDateTime {
   @override
   String suffixAgo() => 'पहले';
   @override
-  String suffixFromNow() => 'अब से';
+  String suffixFromNow() => 'में';
   @override
   String lessThanOneMinute(int seconds) => 'एक क्षण';
   @override
@@ -35,7 +44,7 @@ class HiRelativeDateTime implements RelativeDateTime {
   @override
   String minutes(int minutes) => '$minutes मिनट';
   @override
-  String aboutAnHour(int minutes) => 'करीब एक घंटा';
+  String aboutAnHour(int minutes) => 'करीब एक घंटे';
   @override
   String hours(int hours) => '$hours घंटे';
   @override
@@ -43,13 +52,13 @@ class HiRelativeDateTime implements RelativeDateTime {
   @override
   String days(int days) => '$days दिन';
   @override
-  String aboutAMonth(int days) => 'तक़रीबन एक महीना';
+  String aboutAMonth(int days) => 'तक़रीबन एक महीने';
   @override
   String months(int months) => '$months महीने';
   @override
   String aboutAYear(int year) => 'एक साल';
   @override
-  String years(int years) => '$years वर्षों';
+  String years(int years) => '$years वर्ष';
   @override
   String wordSeparator() => ' ';
 }
@@ -88,4 +97,62 @@ class HiShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years सा';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Hindi calendar date time
+class HiCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'आज $time';
+  @override
+  String nextDay(String time) => 'कल $time';
+  @override
+  String lastDay(String time) => 'कल $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday, $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'पिछले $weekday, $time';
+}
+
+/// Hindi duration units
+class HiDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds सेकंड';
+  @override
+  String minutes(int minutes) => '$minutes मिनट';
+  @override
+  String hours(int hours) => hours <= 1 ? '$hours घंटा' : '$hours घंटे';
+  @override
+  String days(int days) => '$days दिन';
+  @override
+  String weeks(int weeks) => '$weeks सप्ताह';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Hindi short duration units
+class HiShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds से';
+  @override
+  String minutes(int minutes) => '$minutes मि';
+  @override
+  String hours(int hours) => '$hours घं';
+  @override
+  String days(int days) => '$days दि';
+  @override
+  String weeks(int weeks) => '$weeks सप्ताह';
+  @override
+  String delimiter() => ' ';
 }

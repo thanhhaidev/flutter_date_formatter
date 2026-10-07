@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Estonian Locale
-class EtLocale extends Locale {
+class EtLocale extends DateFormatterLocale {
   @override
   String code() => 'et';
 
@@ -16,6 +16,15 @@ class EtLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => EtShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => EtCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => EtDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => EtShortDurationUnits();
 }
 
 /// Estonian relative date time
@@ -88,4 +97,63 @@ class EtShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '${years}a';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Estonian calendar date time
+class EtCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Täna, $time';
+  @override
+  String nextDay(String time) => 'Homme, $time';
+  @override
+  String lastDay(String time) => 'Eile, $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Järgmine $weekday $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Eelmine $weekday $time';
+}
+
+/// Estonian duration units
+class EtDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '1 sekund' : '$seconds sekundit';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 minut' : '$minutes minutit';
+  @override
+  String hours(int hours) => hours == 1 ? '1 tund' : '$hours tundi';
+  @override
+  String days(int days) => days == 1 ? '1 päev' : '$days päeva';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 nädal' : '$weeks nädalat';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Estonian short duration units
+class EtShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds s';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours t';
+  @override
+  String days(int days) => '$days p';
+  @override
+  String weeks(int weeks) => '$weeks näd';
+  @override
+  String delimiter() => ' ';
 }

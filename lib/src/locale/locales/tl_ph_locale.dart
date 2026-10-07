@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Tagalog Locale
-class TlPhLocale extends Locale {
+class TlPhLocale extends DateFormatterLocale {
   @override
   String code() => 'tl_PH';
 
@@ -16,6 +16,15 @@ class TlPhLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => TlPhShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => TlPhCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => TlPhDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => TlPhShortDurationUnits();
 }
 
 /// Tagalog relative date time
@@ -106,14 +115,82 @@ String _numToWordsFormatter(int number) {
   ];
   const vowels = 'aeiou';
 
-  try {
-    final word = numToWords[number];
-    final lastLetterOfWord = word[word.length - 1];
-    if (vowels.contains(lastLetterOfWord)) {
-      return '${word}ng';
-    }
-    return '$word na';
-  } catch (err) {
+  if (number < 1 || number >= numToWords.length) {
     return '$number';
   }
+
+  final word = numToWords[number];
+  if (vowels.contains(word[word.length - 1])) {
+    return '${word}ng';
+  }
+  return '$word na';
 }
+
+/// Tagalog calendar date time
+class TlPhCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => '$time ngayong araw';
+  @override
+  String nextDay(String time) => 'Bukas ng $time';
+  @override
+  String lastDay(String time) => '$time kahapon';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$time sa susunod na ${_weekdays[date.weekday - 1]}';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$time noong nakaraang ${_weekdays[date.weekday - 1]}';
+}
+
+/// Tagalog duration units
+class TlPhDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds segundo';
+  @override
+  String minutes(int minutes) => '$minutes minuto';
+  @override
+  String hours(int hours) => '$hours oras';
+  @override
+  String days(int days) => '$days araw';
+  @override
+  String weeks(int weeks) => '$weeks linggo';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Tagalog short duration units
+class TlPhShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds seg';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours oras';
+  @override
+  String days(int days) => '$days araw';
+  @override
+  String weeks(int weeks) => '$weeks linggo';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Tagalog weekday names, Monday first.
+const _weekdays = [
+  'Lunes',
+  'Martes',
+  'Miyerkules',
+  'Huwebes',
+  'Biyernes',
+  'Sabado',
+  'Linggo',
+];

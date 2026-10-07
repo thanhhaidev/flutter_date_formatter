@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Vietnamese locale
-class ViLocale extends Locale {
+class ViLocale extends DateFormatterLocale {
   @override
   String code() => 'vi';
 
@@ -16,6 +16,15 @@ class ViLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => ViShortRelativeTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => ViCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => ViDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => ViShortDurationUnits();
 }
 
 /// Vietnamese relative date time
@@ -88,4 +97,62 @@ class ViShortRelativeTime extends RelativeDateTime {
   String years(int years) => '$years năm';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Vietnamese calendar date time
+class ViCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Hôm nay lúc $time';
+  @override
+  String nextDay(String time) => 'Ngày mai lúc $time';
+  @override
+  String lastDay(String time) => 'Hôm qua lúc $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      isSameWeek ? '$weekday lúc $time' : '$weekday tuần tới lúc $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      isSameWeek ? '$weekday lúc $time' : '$weekday tuần trước lúc $time';
+}
+
+/// Vietnamese duration units
+class ViDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds giây';
+  @override
+  String minutes(int minutes) => '$minutes phút';
+  @override
+  String hours(int hours) => '$hours giờ';
+  @override
+  String days(int days) => '$days ngày';
+  @override
+  String weeks(int weeks) => '$weeks tuần';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Vietnamese short duration units
+class ViShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds giây';
+  @override
+  String minutes(int minutes) => '$minutes ph';
+  @override
+  String hours(int hours) => '$hours h';
+  @override
+  String days(int days) => '$days ngày';
+  @override
+  String weeks(int weeks) => '$weeks tuần';
+  @override
+  String delimiter() => ' ';
 }

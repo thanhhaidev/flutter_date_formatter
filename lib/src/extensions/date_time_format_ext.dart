@@ -1,3 +1,4 @@
+import 'package:flutter_date_formatter/src/config/date_formatter_config.dart';
 import 'package:flutter_date_formatter/src/flutter_date_formatter.dart';
 
 /// Extension methods for formatting [DateTime] objects.
@@ -47,7 +48,7 @@ extension DateTimeFormatExtensions on DateTime {
     bool withPrefixAndSuffix = true,
   }) {
     return formatRelative(
-      clock: DateTime.now(),
+      clock: DateFormatterConfig.now(),
       locale: locale,
       short: short,
       withPrefixAndSuffix: withPrefixAndSuffix,
@@ -75,7 +76,7 @@ extension DateTimeFormatExtensions on DateTime {
     bool short = false,
     bool withPrefixAndSuffix = true,
   }) {
-    return DateTime.now().formatRelative(
+    return DateFormatterConfig.now().formatRelative(
       locale: locale,
       clock: this,
       short: short,
@@ -86,5 +87,24 @@ extension DateTimeFormatExtensions on DateTime {
   /// Formats the DateTime as an ordinal number.
   String formatOrdinalNumber({String? locale}) {
     return FlutterDateFormatter.ordinal(day, locale: locale);
+  }
+
+  /// Formats the DateTime in calendar style, such as "Today at 3:00 PM" or
+  /// "Last Monday at 3:00 PM".
+  ///
+  /// See [FlutterDateFormatter.formatCalendar].
+  String formatCalendar({
+    String? locale,
+    DateTime? clock,
+    String? timePattern,
+    String? datePattern,
+  }) {
+    return FlutterDateFormatter.formatCalendar(
+      this,
+      locale: locale,
+      clock: clock,
+      timePattern: timePattern,
+      datePattern: datePattern,
+    );
   }
 }

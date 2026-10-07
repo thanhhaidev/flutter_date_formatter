@@ -1,19 +1,22 @@
+import 'package:flutter_date_formatter/src/enums/unit.dart';
 import 'package:flutter_date_formatter/src/extensions/date_time_ext.dart';
+import 'package:flutter_date_formatter/src/extensions/date_time_range_ext.dart';
+import 'package:meta/meta.dart';
 
 /// A class representing a time span between two `DateTime` objects.
 /// It provides methods to calculate the start time, end time, duration,
 /// and middle point, as well as operations for merging, intersecting,
 /// and finding the difference between time spans.
+@immutable
 class TimeSpan {
   /// Creates a `TimeSpan` between two `DateTime` objects.
   ///
   /// The `start` and `end` parameters define the beginning and end of the
   /// time span. The duration is automatically calculated as the difference
   /// between the two times.
-  TimeSpan(DateTime start, DateTime end) {
-    _startTime = start;
-    _duration = end.difference(start);
-  }
+  TimeSpan(DateTime start, DateTime end)
+      : _startTime = start,
+        _duration = end.difference(start);
 
   /// Creates a `TimeSpan` starting from a given `DateTime` with a specified
   /// duration.
@@ -22,7 +25,10 @@ class TimeSpan {
   /// and `duration` is the length of the time span.
   /// The end time is automatically calculated by adding the duration
   /// to the start time.
-  TimeSpan.fromStart(DateTime start, Duration duration)
+  ///
+  /// A negative duration is treated as signed, and the resulting span is
+  /// normalized so that [start] is never after [end].
+  const TimeSpan.fromStart(DateTime start, Duration duration)
       : _startTime = start,
         _duration = duration;
 
@@ -33,6 +39,11 @@ class TimeSpan {
   /// and `duration` is the length of the time span.
   /// The start time is calculated by subtracting the duration from
   /// the end time.
+  ///
+  /// A negative duration is treated as signed, and the resulting span is
+  /// normalized so that [start] is never after [end].
+  // Negating a Duration is not a constant expression.
+  // ignore: prefer_const_constructors_in_immutables
   TimeSpan.fromEnd(DateTime end, Duration duration)
       : _startTime = end,
         _duration = -duration;
@@ -43,12 +54,12 @@ class TimeSpan {
   ///  and `duration` defines the length of the time span.
   /// The start time is calculated by subtracting half of the duration from
   /// the center time.
-  TimeSpan.fromCenter(DateTime center, Duration duration) {
-    _startTime = center.subtract(duration ~/ 2);
-    _duration = duration;
-  }
-  late final DateTime _startTime;
-  late final Duration _duration;
+  TimeSpan.fromCenter(DateTime center, Duration duration)
+      : _startTime = center.subtract(duration ~/ 2),
+        _duration = duration;
+
+  final DateTime _startTime;
+  final Duration _duration;
 
   /// Returns the start time of the `TimeSpan`.
   DateTime get start =>
@@ -101,10 +112,10 @@ class TimeSpan {
 
   /// Checks if this `TimeSpan` intersects with another `TimeSpan`.
   ///
-  /// Returns `true` if the other `TimeSpan` is partially or fully within
-  /// this time span.
+  /// Returns `true` if the two time spans share at least one instant
+  /// (inclusive), including when one fully contains the other.
   bool intersects(TimeSpan other) =>
-      contains(other.start) || contains(other.end);
+      !end.isBefore(other.start) && !other.end.isBefore(start);
 
   /// Checks if this `TimeSpan` is equal to another `TimeSpan`.
   ///
@@ -141,20 +152,17 @@ class TimeSpan {
 
   /// Merges this `TimeSpan` with another `TimeSpan` if they intersect.
   ///
-  /// Returns a new `TimeSpan` that represents the union of the two time spans.
+  /// Returns a new `TimeSpan` that represents the union of the two time spans,
+  /// from the earlier start to the later end.
   /// Throws a `RangeError` if the time spans don't intersect.
   TimeSpan merge(TimeSpan other) {
-    if (intersects(other)) {
-      if (end.isAfter(other.start) || end.isSame(other.start)) {
-        return TimeSpan(start, other.end);
-      } else if (other.end.isAfter(start) || other.end.isSame(start)) {
-        return TimeSpan(other.start, end);
-      } else {
-        throw RangeError('Merge error: this: $this; other: $other');
-      }
-    } else {
-      throw RangeError("TimeSpans don't intersect");
+    if (!intersects(other)) {
+      throw RangeError("TimeSpans don't intersect: this: $this; other: $other");
     }
+    return TimeSpan(
+      start.isBefore(other.start) ? start : other.start,
+      end.isAfter(other.end) ? end : other.end,
+    );
   }
 
   /// Returns the intersection of this `TimeSpan` and another `TimeSpan`.
@@ -162,8 +170,7 @@ class TimeSpan {
   /// If the two time spans overlap, a new `TimeSpan` representing
   /// the intersection is returned. Otherwise, `null` is returned.
   TimeSpan? getIntersection(TimeSpan other) {
-    if (end.isBefore(other.start) || other.end.isBefore(start)) {
-      // No overlap
+    if (!intersects(other)) {
       return null;
     }
 
@@ -173,29 +180,40 @@ class TimeSpan {
     return TimeSpan(intersectionStart, intersectionEnd);
   }
 
+  /// Returns the parts of this `TimeSpan` that are not covered by [other].
+  ///
+  /// The result is empty when [other] covers this time span, holds a single
+  /// item when they don't overlap or overlap on one side, and holds two items
+  /// when [other] lies strictly inside this time span.
+  List<TimeSpan> getDifferences(TimeSpan other) {
+    if (other.containsTimeSpan(this)) {
+      return [];
+    }
+    if (!intersects(other)) {
+      return [this];
+    }
+
+    return [
+      if (start.isBefore(other.start)) TimeSpan(start, other.start),
+      if (other.end.isBefore(end)) TimeSpan(other.end, end),
+    ];
+  }
+
   /// Returns the difference between this `TimeSpan` and another `TimeSpan`.
   ///
-  /// If the two time spans are equal, `null` is returned.
-  /// Otherwise, the method returns the non-overlapping parts of
-  /// this `TimeSpan` compared to the other `TimeSpan`.
+  /// Returns `null` if [other] covers this time span, and the remaining part
+  /// of this `TimeSpan` otherwise.
+  /// Throws a `RangeError` if [other] lies strictly inside this time span,
+  /// because the difference then has two parts; use [getDifferences] for that.
   TimeSpan? getDifference(TimeSpan other) {
-    if (other.isSame(this)) {
-      return null;
-    } else if (isBeforeOrSame(other)) {
-      if (end.isBefore(other.start)) {
-        return this;
-      } else {
-        return TimeSpan(start, other.start);
-      }
-    } else if (isAfterOrSame(other)) {
-      if (other.end.isBefore(start)) {
-        return this;
-      } else {
-        return TimeSpan(other.end, end);
-      }
-    } else {
-      throw RangeError('Difference error: this: $this; other: $other');
+    final differences = getDifferences(other);
+    if (differences.length > 1) {
+      throw RangeError(
+        'Difference has two parts: this: $this; other: $other. '
+        'Use getDifferences instead.',
+      );
     }
+    return differences.isEmpty ? null : differences.first;
   }
 
   /// Returns the symmetric difference between this `TimeSpan`
@@ -204,12 +222,12 @@ class TimeSpan {
   /// The symmetric difference consists of the parts of both time spans
   /// that do not overlap.
   /// This method returns a list of `TimeSpan` objects representing the
-  /// non-overlapping sections.
+  /// non-overlapping sections, ordered by start time.
   List<TimeSpan> symmetricDifference(TimeSpan other) {
     final first = start.isBefore(other.start) ? this : other;
-    final second = start.isBefore(other.start) ? other : this;
+    final second = identical(first, this) ? other : this;
 
-    if (first.end.isBefore(other.start) || second.end.isBefore(first.start)) {
+    if (first.end.isBefore(second.start)) {
       // No overlap, return both TimeSpans
       return [first, second];
     }
@@ -218,8 +236,6 @@ class TimeSpan {
 
     if (first.start.isBefore(second.start)) {
       result.add(TimeSpan(first.start, second.start));
-    } else if (second.start.isBefore(first.start)) {
-      result.add(TimeSpan(second.start, first.start));
     }
 
     if (first.end.isAfter(second.end)) {
@@ -230,4 +246,22 @@ class TimeSpan {
 
     return result;
   }
+
+  /// Returns the dates from [start] to [end] (inclusive), [step] [unit]s
+  /// apart, e.g. every day of the time span.
+  ///
+  /// See [DateTimeRangeExtensions.rangeTo].
+  Iterable<DateTime> iterate({Unit unit = Unit.day, int step = 1}) =>
+      start.rangeTo(end, unit: unit, step: step);
+
+  @override
+  bool operator ==(Object other) =>
+      other is TimeSpan && start == other.start && end == other.end;
+
+  @override
+  int get hashCode => Object.hash(start, end);
+
+  @override
+  String toString() =>
+      'TimeSpan(${start.toIso8601String()} - ${end.toIso8601String()})';
 }

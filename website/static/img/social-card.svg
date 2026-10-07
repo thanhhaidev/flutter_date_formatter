@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0F2329"/>
+  <path d="M760 630L980 0h90L850 630z" fill="#06B873" opacity=".18"/>
+  <text x="80" y="270" font-family="Rethink Sans, sans-serif" font-size="76" font-weight="800" fill="#FFFFFF" letter-spacing="-3">Dates for every locale</text>
+  <text x="80" y="360" font-family="Rethink Sans, sans-serif" font-size="76" font-weight="800" fill="#06B873" letter-spacing="-3">in one line of Dart</text>
+  <text x="80" y="450" font-family="JetBrains Mono, monospace" font-size="30" fill="#B9E8D5">flutter_date_formatter</text>
+</svg>

@@ -40,6 +40,7 @@ export 'locales/pt_locale.dart';
 export 'locales/ro_locale.dart';
 export 'locales/ru_locale.dart';
 export 'locales/rw_locale.dart';
+export 'locales/sk_locale.dart';
 export 'locales/sr_locale.dart';
 export 'locales/sv_locale.dart';
 export 'locales/ta_locale.dart';

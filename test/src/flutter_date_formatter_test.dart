@@ -12,8 +12,9 @@ void main() {
 
   group('DateTimeExtensions', () {
     final now = DateTime.now();
-    final past = now.subtract(const Duration(days: 1));
-    final future = now.add(const Duration(days: 1));
+    // Calendar days, so the fixtures stay correct across DST transitions.
+    final past = now.subDays(1);
+    final future = now.addDays(1);
 
     test('isFuture', () {
       expect(future.isFuture, isTrue);
@@ -421,6 +422,8 @@ void main() {
   });
 
   group('DateTimeFormatExtensions', () {
+    final clock = DateTime(2025, 3, 10, 12);
+
     test('format should return ISO8601 string when no pattern is provided', () {
       // Given
       final date = DateTime(2025, 3, 10, 15, 30);
@@ -446,8 +449,8 @@ void main() {
 
     test('formatRelative should return relative time', () {
       // Given
-      final now = DateTime.now();
-      final past = DateTime.now().subMinutes(5);
+      final now = clock;
+      final past = clock.subMinutes(5);
 
       // When
       final formatted = past.formatRelative(clock: now);
@@ -458,11 +461,11 @@ void main() {
 
     test('formatFrom should return relative time from specified clock', () {
       // Given
-      final clock = DateTime.now().addDays(5);
-      final past = DateTime.now();
+      final from = clock.addDays(5);
+      final past = clock;
 
       // When
-      final formatted = past.formatFrom(clock: clock);
+      final formatted = past.formatFrom(clock: from);
 
       // Then
       expect(formatted, '5 days ago');
@@ -481,8 +484,8 @@ void main() {
 
     test('formatTo should return relative time to specified clock', () {
       // Given
-      final now = DateTime.now().addDays(2);
-      final past = DateTime.now().subDays(2);
+      final now = clock.addDays(2);
+      final past = clock.subDays(2);
 
       // When
       final formatted = past.formatTo(clock: now);
@@ -505,8 +508,8 @@ void main() {
     test('formatRelative should return relative time without prefix and suffix',
         () {
       // Given
-      final now = DateTime.now();
-      final past = DateTime.now().subMinutes(2);
+      final now = clock;
+      final past = clock.subMinutes(2);
 
       // When
       final formatted =
@@ -518,8 +521,8 @@ void main() {
 
     test('formatRelative should return short relative time', () {
       // Given
-      final now = DateTime.now();
-      final past = DateTime.now().subDays(6);
+      final now = clock;
+      final past = clock.subDays(6);
 
       // When
       final formatted = past.formatRelative(clock: now, short: true);
@@ -531,8 +534,8 @@ void main() {
     test('formatRelative should return relative time in a different locale',
         () {
       // Given
-      final now = DateTime.now().addDays(2);
-      final past = DateTime.now().subDays(1);
+      final now = clock.addDays(2);
+      final past = clock.subDays(1);
 
       // When
       final formatted = past.formatRelative(clock: now, locale: 'vi');

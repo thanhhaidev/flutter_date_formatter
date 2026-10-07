@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Croatian Locale
-class HrLocale extends Locale {
+class HrLocale extends DateFormatterLocale {
   @override
   String code() => 'hr';
 
@@ -16,6 +16,15 @@ class HrLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => HrRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => HrCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => HrDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => HrShortDurationUnits();
 }
 
 /// Croatian relative date time
@@ -39,96 +48,133 @@ class HrRelativeDateTime implements RelativeDateTime {
   String aboutAMinute(int minutes) => 'oko jedne minute';
 
   @override
-  String minutes(int minutes) {
-    if (minutes % 100 == 11 ||
-        minutes % 100 == 12 ||
-        minutes % 100 == 13 ||
-        minutes % 100 == 14) {
-      return '$minutes minuta';
-    }
-
-    if (minutes % 10 == 1) return '$minutes minutu';
-
-    if (minutes % 10 == 2 || minutes % 10 == 3 || minutes % 4 == 0) {
-      return '$minutes minute';
-    }
-
-    return '$minutes minuta';
-  }
+  String minutes(int minutes) => _plural(minutes, 'minutu', 'minute', 'minuta');
 
   @override
   String aboutAnHour(int minutes) => 'oko jednog sata';
 
   @override
-  String hours(int hours) {
-    if (hours % 100 == 11 ||
-        hours % 100 == 12 ||
-        hours % 100 == 13 ||
-        hours % 100 == 14) {
-      return '$hours sati';
-    }
-
-    if (hours % 10 == 1) return '$hours sat';
-
-    if (hours % 10 == 2 || hours % 10 == 3 || hours % 4 == 0) {
-      return '$hours sata';
-    }
-
-    return '$hours sati';
-  }
+  String hours(int hours) => _plural(hours, 'sat', 'sata', 'sati');
 
   @override
   String aDay(int hours) => 'jedan dan';
 
   @override
-  String days(int days) {
-    if (days % 100 == 11) return '$days dana';
-    if (days % 10 == 1) return '$days dan';
-    return '$days dana';
-  }
+  String days(int days) => _plural(days, 'dan', 'dana', 'dana');
 
   @override
   String aboutAMonth(int days) => 'oko jednog mjeseca';
 
   @override
-  String months(int months) {
-    if (months % 100 == 11 ||
-        months % 100 == 12 ||
-        months % 100 == 13 ||
-        months % 100 == 14) {
-      return '$months mjeseci';
-    }
-
-    if (months % 10 == 1) return '$months mjesec';
-
-    if (months % 10 == 2 || months % 10 == 3 || months % 4 == 0) {
-      return '$months mjeseca';
-    }
-
-    return '$months mjeseci';
-  }
+  String months(int months) => _plural(months, 'mjesec', 'mjeseca', 'mjeseci');
 
   @override
   String aboutAYear(int year) => 'oko jedne godine';
 
   @override
-  String years(int years) {
-    if (years % 100 == 11 ||
-        years % 100 == 12 ||
-        years % 100 == 13 ||
-        years % 100 == 14) {
-      return '$years godina';
-    }
-
-    if (years % 10 == 1) return '$years godinu';
-
-    if (years % 10 == 2 || years % 10 == 3 || years % 4 == 0) {
-      return '$years godine';
-    }
-
-    return '$years godina';
-  }
+  String years(int years) => _plural(years, 'godinu', 'godine', 'godina');
 
   @override
   String wordSeparator() => ' ';
+}
+
+/// Picks the CLDR plural form (one / few / other) for Croatian.
+String _plural(int n, String one, String few, String other) {
+  final mod10 = n % 10;
+  final mod100 = n % 100;
+  if (mod10 == 1 && mod100 != 11) return '$n $one';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    return '$n $few';
+  }
+  return '$n $other';
+}
+
+/// Croatian calendar date time
+class HrCalendarDateTime implements CalendarDateTime {
+  // Accusative weekday names, Monday first ("u srijedu").
+  static const _weekdays = [
+    'ponedjeljak',
+    'utorak',
+    'srijedu',
+    'četvrtak',
+    'petak',
+    'subotu',
+    'nedjelju',
+  ];
+
+  @override
+  String sameDay(String time) => 'Danas u $time';
+
+  @override
+  String nextDay(String time) => 'Sutra u $time';
+
+  @override
+  String lastDay(String time) => 'Jučer u $time';
+
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'U ${_weekdays[date.weekday - 1]} u $time';
+
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    final day = date.weekday;
+    if (day == DateTime.saturday) return 'Prošle subote u $time';
+    final prefix = day == DateTime.wednesday || day == DateTime.sunday
+        ? 'Prošlu'
+        : 'Prošli';
+    return '$prefix ${_weekdays[day - 1]} u $time';
+  }
+}
+
+/// Croatian duration units
+class HrDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      _plural(seconds, 'sekunda', 'sekunde', 'sekundi');
+
+  @override
+  String minutes(int minutes) => _plural(minutes, 'minuta', 'minute', 'minuta');
+
+  @override
+  String hours(int hours) => _plural(hours, 'sat', 'sata', 'sati');
+
+  @override
+  String days(int days) => _plural(days, 'dan', 'dana', 'dana');
+
+  @override
+  String weeks(int weeks) => _plural(weeks, 'tjedan', 'tjedna', 'tjedana');
+
+  @override
+  String delimiter() => ' ';
+}
+
+/// Croatian short duration units
+class HrShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds s';
+
+  @override
+  String minutes(int minutes) => '$minutes min';
+
+  @override
+  String hours(int hours) => '$hours h';
+
+  @override
+  String days(int days) => '$days d';
+
+  @override
+  String weeks(int weeks) => '$weeks tj.';
+
+  @override
+  String delimiter() => ' ';
 }

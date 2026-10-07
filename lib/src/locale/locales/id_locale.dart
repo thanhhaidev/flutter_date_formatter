@@ -1,12 +1,12 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Indonesian Locale
-class IdLocale extends Locale {
+class IdLocale extends DateFormatterLocale {
   @override
   String code() => 'id';
 
   @override
-  String ordinal(int n) => '.';
+  String ordinal(int n) => '';
 
   @override
   String ordinalNumber(int n) => 'ke-$n';
@@ -16,6 +16,15 @@ class IdLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => IdShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => IdCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => IdDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => IdShortDurationUnits();
 }
 
 /// Indonesian relative date time
@@ -88,4 +97,62 @@ class IdShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '${years}th';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Indonesian calendar date time
+class IdCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Hari ini pukul $time';
+  @override
+  String nextDay(String time) => 'Besok pukul $time';
+  @override
+  String lastDay(String time) => 'Kemarin pukul $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday pukul $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday lalu pukul $time';
+}
+
+/// Indonesian duration units
+class IdDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds detik';
+  @override
+  String minutes(int minutes) => '$minutes menit';
+  @override
+  String hours(int hours) => '$hours jam';
+  @override
+  String days(int days) => '$days hari';
+  @override
+  String weeks(int weeks) => '$weeks minggu';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Indonesian short duration units
+class IdShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds dtk';
+  @override
+  String minutes(int minutes) => '$minutes mnt';
+  @override
+  String hours(int hours) => '$hours j';
+  @override
+  String days(int days) => '$days h';
+  @override
+  String weeks(int weeks) => '$weeks mgg';
+  @override
+  String delimiter() => ' ';
 }
