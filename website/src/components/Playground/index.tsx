@@ -1,8 +1,9 @@
-import React, {type ReactNode} from 'react';
+import React, {useState, type ReactNode} from 'react';
 import Link from '@docusaurus/Link';
+import {useLayoutDoc} from '@docusaurus/plugin-content-docs/client';
 import CodeBlock from '@theme/CodeBlock';
 import clsx from 'clsx';
-import {usePlayground, type StartOfWeek} from './context';
+import {copyText, usePlayground, type StartOfWeek} from './context';
 import type {CallResult} from '@site/src/lib/dateFormatter';
 import styles from './styles.module.css';
 
@@ -11,6 +12,11 @@ export {usePlayground} from './context';
 /** The shared settings bar: locale, "now" and first day of the week. */
 function SettingsBar() {
   const p = usePlayground();
+  const [shared, setShared] = useState(false);
+  const share = async () => {
+    setShared(await p.share());
+    window.setTimeout(() => setShared(false), 1600);
+  };
   return (
     <div className={styles.settings}>
       <span className={styles.settingsTitle}>
@@ -26,6 +32,8 @@ function SettingsBar() {
           ))}
         </select>
       </label>
+      <button type="button" className={styles.linkButton} onClick={p.reset}>reset</button>
+      <button type="button" className={styles.linkButton} onClick={share}>{shared ? 'copied!' : 'share'}</button>
       <label className={styles.settingsField}>
         now
         <input
@@ -67,6 +75,14 @@ export function Playground({
   output: ReactNode;
   code?: string;
 }) {
+  const [copied, setCopied] = useState(false);
+  const copyCode = async () => {
+    if (!code) return;
+    if (await copyText(code)) {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    }
+  };
   return (
     <div className={styles.panel}>
       <SettingsBar />
@@ -85,6 +101,15 @@ export function Playground({
       {code ? (
         <div className={styles.code}>
           <CodeBlock language="dart">{code}</CodeBlock>
+          <div className={styles.codeActions}>
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={() => void copyCode()}
+            >
+              {copied ? 'copied!' : 'copy Dart'}
+            </button>
+          </div>
         </div>
       ) : null}
     </div>
@@ -293,8 +318,11 @@ export function Card({
   tags?: string[];
   children: ReactNode;
 }) {
+  const docId = to.replace(/^\/docs\//, '').replace(/\/$/, '');
+  const doc = useLayoutDoc(docId);
+
   return (
-    <Link to={to} className={styles.card}>
+    <Link to={doc?.path ?? to} className={styles.card}>
       <span className={styles.cardIcon}>{icon}</span>
       <span className={styles.cardTitle}>{title}</span>
       <span className={styles.cardText}>{children}</span>

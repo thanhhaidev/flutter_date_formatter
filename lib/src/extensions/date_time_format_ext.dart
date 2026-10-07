@@ -107,4 +107,22 @@ extension DateTimeFormatExtensions on DateTime {
       datePattern: datePattern,
     );
   }
+
+  /// Formats this date and [end] as a localized date range.
+  ///
+  /// See [FlutterDateFormatter.formatDateTimeRange].
+  String formatRange(
+    DateTime end, {
+    String? locale,
+    String? pattern,
+    String separator = ' – ',
+  }) {
+    return FlutterDateFormatter.formatDateTimeRange(
+      this,
+      end,
+      locale: locale,
+      pattern: pattern,
+      separator: separator,
+    );
+  }
 }

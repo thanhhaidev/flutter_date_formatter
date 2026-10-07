@@ -55,6 +55,8 @@
 
 .settingsField select option { color: #000; }
 
+.settings button { white-space: nowrap; }
+
 .linkButton {
   background: none;
   border: 0;
@@ -210,6 +212,12 @@
   border-left-color: var(--asx-danger);
   color: var(--asx-danger);
   font: 500 0.85rem/1.55 var(--ifm-font-family-monospace);
+}
+
+.codeActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1.1rem 0.8rem;
 }
 
 .skeleton {

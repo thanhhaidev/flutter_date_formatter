@@ -1,3 +1,30 @@
+## 0.2.0
+
+### **Added**:
+
+- `DateTime.formatRange` and `FlutterDateFormatter.formatDateTimeRange` for
+  smart localized date ranges, including compact same-month output such as
+  `Mar 1–5, 2025`.
+- `FlutterDateFormatter.parseAny` and `parseAnyDetailed` for trying multiple
+  input patterns, with per-pattern diagnostics for import and validation flows.
+- Date range presets in the documentation Playground for same-day,
+  same-month, cross-month and cross-year examples.
+- Documentation for local and UTC `DateTime` behavior without bundling a
+  timezone database.
+- Expanded Playground sharing and copying fallback for browsers without the
+  Clipboard API.
+
+### **Changed**:
+
+- Vietnamese short duration units now use compact localized forms such as
+  `1n 2g`.
+
+### **Documentation**:
+
+- Added interactive date range and locale examples.
+- Documented `parseAny`, `parseAnyDetailed`, Vietnamese compact duration units,
+  region-qualified locales and timezone boundaries.
+
 ## 0.1.0
 
 ### **Fixed**:

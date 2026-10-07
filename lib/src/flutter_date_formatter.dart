@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter_date_formatter/src/config/date_formatter_config.dart';
 import 'package:flutter_date_formatter/src/enums/enums.dart';
 import 'package:flutter_date_formatter/src/extensions/date_time_ext.dart';
@@ -10,6 +12,37 @@ import 'package:intl/intl.dart';
 /// A class that formats a [DateTime] object to a string, and parses strings
 /// in the same pattern.
 ///
+/// Diagnostics for one pattern attempted by
+/// [FlutterDateFormatter.parseAnyDetailed].
+class ParseAnyAttempt {
+  /// Creates a diagnostic entry for [pattern].
+  const ParseAnyAttempt({required this.pattern, this.error});
+
+  /// The pattern that was attempted.
+  final String pattern;
+
+  /// The parse error, or `null` when this pattern matched.
+  final FormatException? error;
+
+  /// Whether this pattern matched the input.
+  bool get matched => error == null;
+}
+
+/// The result of [FlutterDateFormatter.parseAnyDetailed].
+class ParseAnyResult {
+  /// Creates a detailed parse result.
+  const ParseAnyResult({required this.value, required this.attempts});
+
+  /// The parsed value, or `null` when all patterns failed.
+  final DateTime? value;
+
+  /// Diagnostics in the same order as the supplied patterns.
+  final List<ParseAnyAttempt> attempts;
+
+  /// Whether any pattern matched the input.
+  bool get matched => value != null;
+}
+
 /// An instance can be reused to format and parse any number of dates.
 class FlutterDateFormatter {
   /// Creates a new instance of [FlutterDateFormatter].
@@ -132,6 +165,63 @@ class FlutterDateFormatter {
     }
   }
 
+  /// Parses [input] with the first matching pattern.
+  ///
+  /// This is useful when an input may arrive in one of several known
+  /// representations, such as `yyyy-MM-dd` or `dd/MM/yyyy`.
+  ///
+  /// Throws a [FormatException] when none of [patterns] match, and an
+  /// [ArgumentError] when [patterns] is empty.
+  static DateTime parseAny(
+    String input, {
+    required List<String> patterns,
+    String? locale,
+    bool strict = false,
+    bool utc = false,
+  }) {
+    if (patterns.isEmpty) {
+      throw ArgumentError.value(patterns, 'patterns', 'Must not be empty');
+    }
+
+    FormatException? lastError;
+    for (final pattern in patterns) {
+      try {
+        return FlutterDateFormatter(pattern, locale)
+            .parse(input, strict: strict, utc: utc);
+      } on FormatException catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError ??
+        FormatException('Could not parse "$input" with the provided patterns');
+  }
+
+  /// Parses [input] and returns the first matching pattern plus diagnostics
+  /// for every pattern attempted.
+  static ParseAnyResult parseAnyDetailed(
+    String input, {
+    required List<String> patterns,
+    String? locale,
+    bool strict = false,
+    bool utc = false,
+  }) {
+    if (patterns.isEmpty) {
+      throw ArgumentError.value(patterns, 'patterns', 'Must not be empty');
+    }
+    final attempts = <ParseAnyAttempt>[];
+    for (final pattern in patterns) {
+      try {
+        final value = FlutterDateFormatter(pattern, locale)
+            .parse(input, strict: strict, utc: utc);
+        attempts.add(ParseAnyAttempt(pattern: pattern));
+        return ParseAnyResult(value: value, attempts: attempts);
+      } on FormatException catch (error) {
+        attempts.add(ParseAnyAttempt(pattern: pattern, error: error));
+      }
+    }
+    return ParseAnyResult(value: null, attempts: attempts);
+  }
+
   String _escapedPattern(String subject) {
     final pattern = _pattern ?? '';
     if (pattern.trim().isEmpty) {
@@ -202,6 +292,106 @@ class FlutterDateFormatter {
       > 1 => calendar.nextWeek(date, weekday, time, isSameWeek: isSameWeek),
       _ => calendar.lastWeek(date, weekday, time, isSameWeek: isSameWeek),
     };
+  }
+
+  /// Formats a date range using a locale-aware date pattern.
+  ///
+  /// The default pattern is `yMMMd`, which produces output such as
+  /// `Mar 1–5, 2025` in English and the corresponding localized dates in
+  /// other locales. Pass [pattern] to use the same package pattern syntax as
+  /// [format], including `do` ordinals and `[literal]` text.
+  ///
+  /// If [start] and [end] are the same instant, only one date is returned.
+  /// [start] must not be after [end].
+  static String formatDateTimeRange(
+    DateTime start,
+    DateTime end, {
+    String? locale,
+    String? pattern,
+    String separator = ' – ',
+  }) {
+    IntlUtils.ensureInitialized();
+    if (start.isAfter(end)) {
+      throw ArgumentError.value(
+        end,
+        'end',
+        'The end of a date range must not be before its start',
+      );
+    }
+
+    final formatter =
+        pattern == null ? null : FlutterDateFormatter(pattern, locale);
+    String formatDate(DateTime date) =>
+        formatter?.format(date) ??
+        DateFormat.yMMMd(
+          IntlUtils.resolveLocale(
+            locale,
+            SupportedLocalesUtils.getRelativeLocale(locale),
+          ),
+        ).format(date);
+
+    final formattedStart = formatDate(start);
+    if (start == end) return formattedStart;
+    if (pattern == null &&
+        start.year == end.year &&
+        start.month == end.month &&
+        start.day == end.day) {
+      return formattedStart;
+    }
+    if (pattern == null && start.year == end.year && start.month == end.month) {
+      final formattedEnd = formatDate(end);
+      final dayStart = DateFormat.d(
+        IntlUtils.resolveLocale(
+          locale,
+          SupportedLocalesUtils.getRelativeLocale(locale),
+        ),
+      ).format(start);
+      final dayEnd = DateFormat.d(
+        IntlUtils.resolveLocale(
+          locale,
+          SupportedLocalesUtils.getRelativeLocale(locale),
+        ),
+      ).format(end);
+      final prefixLength = _commonPrefixLength(formattedStart, formattedEnd);
+      final suffixLength = _commonSuffixLength(
+        formattedStart,
+        formattedEnd,
+        prefixLength,
+      );
+      final prefix = formattedStart.substring(0, prefixLength);
+      final suffix = suffixLength == 0
+          ? ''
+          : formattedStart.substring(formattedStart.length - suffixLength);
+      if (formattedStart == '$prefix$dayStart$suffix' &&
+          formattedEnd == '$prefix$dayEnd$suffix') {
+        return '$prefix$dayStart${separator.trim()}$dayEnd$suffix';
+      }
+    }
+    return '$formattedStart$separator${formatDate(end)}';
+  }
+
+  static int _commonPrefixLength(String first, String second) {
+    var length = 0;
+    final maxLength = math.min(first.length, second.length);
+    while (length < maxLength && first[length] == second[length]) {
+      length++;
+    }
+    return length;
+  }
+
+  static int _commonSuffixLength(
+    String first,
+    String second,
+    int prefixLength,
+  ) {
+    var length = 0;
+    final maxLength = math.min(first.length, second.length) - prefixLength;
+    while (length < maxLength &&
+        first[first.length - length - 1] ==
+            second[second.length - length - 1]) {
+      length++;
+    }
+    return length;
   }
 
   /// Returns the first day of the calendar week containing [date], using the

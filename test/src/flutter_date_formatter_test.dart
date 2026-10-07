@@ -447,6 +447,45 @@ void main() {
       expect(formatted, '2025/03/10 15:30');
     });
 
+    test('formatRange should use a localized default date pattern', () {
+      final start = DateTime(2025, 3);
+      final end = DateTime(2025, 3, 5);
+
+      expect(start.formatRange(end), 'Mar 1–5, 2025');
+      expect(
+        start.formatRange(end, locale: 'vi'),
+        '1–5 thg 3, 2025',
+      );
+      expect(
+        start.formatRange(start.add(const Duration(hours: 4))),
+        'Mar 1, 2025',
+      );
+    });
+
+    test('formatRange should reuse package patterns and collapse equal dates',
+        () {
+      final date = DateTime(2025, 3);
+
+      expect(
+        date.formatRange(
+          date.add(const Duration(hours: 2)),
+          pattern: 'do MMMM yyyy HH:mm',
+        ),
+        '1st March 2025 00:00 – 1st March 2025 02:00',
+      );
+      expect(
+        date.formatRange(date, pattern: 'do MMMM yyyy'),
+        '1st March 2025',
+      );
+    });
+
+    test('formatRange rejects a range whose end precedes its start', () {
+      expect(
+        () => clock.formatRange(clock.subDays(1)),
+        throwsArgumentError,
+      );
+    });
+
     test('formatRelative should return relative time', () {
       // Given
       final now = clock;

@@ -5,10 +5,15 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const repo = 'https://github.com/thanhhaidev/flutter_date_formatter';
-
-// The package version, shown in the navbar.
-const packageVersion =
-  /^version:\s*(\S+)/m.exec(readFileSync('../pubspec.yaml', 'utf8'))?.[1] ?? '';
+const releasedDocVersions = JSON.parse(
+  readFileSync(new URL('./versions.json', import.meta.url), 'utf8'),
+) as string[];
+const docsVersionLabels = {
+  current: {label: 'Next'},
+  ...Object.fromEntries(
+    releasedDocVersions.map((version) => [version, {label: `v${version}`}]),
+  ),
+};
 
 // Content hash of the compiled package, appended to its URL so browsers never
 // keep an outdated copy.
@@ -89,15 +94,22 @@ const config: Config = {
       },
       items: [
         {type: 'html', position: 'left', value: '<span class="navbar-docs-badge">DOCS</span>'},
-        {to: '/docs/', label: 'Guide', position: 'left', activeBaseRegex: '/docs/?(configuration)?$'},
-        {to: '/docs/formatting', label: 'API', position: 'left', activeBaseRegex: '/docs/(formatting|relative-time|calendar|durations|parsing|datetime-helpers|timespan-ranges)'},
-        {to: '/docs/locales', label: 'Locales', position: 'left', activeBaseRegex: '/docs/(locales|custom-locales)(/|$)'},
-        {to: '/changelog', label: 'Changelog', position: 'left'},
+        {type: 'doc', docId: 'index', label: 'Guide', position: 'left'},
+        {type: 'doc', docId: 'formatting', label: 'API', position: 'left'},
+        {type: 'doc', docId: 'locales', label: 'Locales', position: 'left'},
         {
-          type: 'html',
+          type: 'docsVersionDropdown',
           position: 'right',
-          value: `<a class="navbar-version" href="${process.env.BASE_URL ?? '/flutter_date_formatter/'}changelog" title="Changelog">v${packageVersion}</a>`,
+          className: 'navbar-version-dropdown',
+          versions: docsVersionLabels,
+          dropdownItemsBefore: [
+            {type: 'html', value: '<span class="dropdown__header">FLUTTER DATE FORMATTER</span>'},
+          ],
+          dropdownItemsAfter: [
+            {to: '/changelog', label: 'Release notes', className: 'version-picker-footer'},
+          ],
         },
+        {to: '/changelog', label: 'Changelog', position: 'left'},
         {href: repo, position: 'right', className: 'navbar-github', 'aria-label': 'GitHub repository'},
       ],
     },

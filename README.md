@@ -61,6 +61,22 @@ String formattedDate = FlutterDateFormatter(pattern, 'en').format(now);
 print(formattedDate); // Output: 13th February 2025
 ```
 
+Format a localized date range with the locale's default date pattern, or
+provide the same pattern syntax used by `FlutterDateFormatter`:
+
+```dart
+final start = DateTime(2025, 3, 1);
+final end = DateTime(2025, 3, 5);
+
+start.formatRange(end); // Mar 1–5, 2025
+start.formatRange(end, locale: 'vi'); // 1–5 thg 3, 2025
+FlutterDateFormatter.formatDateTimeRange(
+  start,
+  end,
+  pattern: 'do MMMM yyyy',
+); // 1st March 2025 – 5th March 2025
+```
+
 ### Formatting Relative Dates
 
 You can format dates relative to the current time using the `formatRelativeDateTime` function:
@@ -113,7 +129,14 @@ final formatter = FlutterDateFormatter('do MMMM yyyy', 'en');
 formatter.parse('21st March 2025'); // DateTime(2025, 3, 21)
 formatter.tryParse('not a date'); // null
 FlutterDateFormatter('yyyy-MM-dd', 'en').parse('2025-02-30', strict: true); // throws FormatException
+FlutterDateFormatter.parseAny(
+  '05/03/2025',
+  patterns: ['yyyy-MM-dd', 'dd/MM/yyyy'],
+); // DateTime(2025, 3, 5)
 ```
+
+Use `parseAnyDetailed` when a form or import flow needs diagnostics for every
+pattern instead of only the last parse error.
 
 ### Ranges and Comparison
 
