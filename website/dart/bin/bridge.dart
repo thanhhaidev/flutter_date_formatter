@@ -94,6 +94,14 @@ Object? _dispatch(String method, _Args a) {
           .date('date')
           .format(pattern: a.str('pattern') ?? '', locale: locale);
 
+    case 'formatRange':
+      return FlutterDateFormatter.formatDateTimeRange(
+        a.date('start'),
+        a.date('end'),
+        locale: locale,
+        pattern: a.str('pattern'),
+      );
+
     case 'ordinal':
       return FlutterDateFormatter.ordinal(a.integer('n'), locale: locale);
 

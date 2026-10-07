@@ -1,0 +1,37 @@
+---
+title: Calendar time
+description: Chat-style timestamps such as "Today at 3:00 PM" or "Last Monday at 3:00 PM".
+---
+
+# Calendar time
+
+`formatCalendar` gives chat-style timestamps: "Today at 3:00 PM", "Yesterday at …", "Last Monday at …", and the date for anything further away.
+
+## formatCalendar
+
+| Distance | Result (en) |
+| --- | --- |
+| today / tomorrow / yesterday | Today at 3:00 PM |
+| 2 – 6 days ahead | Thursday at 3:00 PM |
+| 2 – 6 days ago, same week | Wednesday at 3:00 PM |
+| 2 – 6 days ago, previous week | Last Wednesday at 3:00 PM |
+| further | 3/4/2025 (locale `yMd`) |
+
+Change **now** or **week starts** in the dark bar to watch the wording switch between this week and last or next week.
+
+<CalendarDemo />
+
+## Week-aware wording
+
+Weekdays are worded relative to the current week, using the locale's first day of the week (or the [configured](./configuration.mdx) one). Languages that say "this Monday" and "last Monday" differently use the right form:
+
+| Locale | Same week | Other week |
+| --- | --- | --- |
+| en | Wednesday at 3:00 PM | Last Wednesday at 3:00 PM |
+| vi | Thứ Tư lúc 15:00 | Thứ Tư tuần trước lúc 15:00 |
+| zh | 本周三15:00 | 上周三15:00 · 下周一15:00 |
+| ja | 水曜日 15:00 | 先週土曜日 15:00 · 来週月曜日 15:00 |
+| ru | В среду, в 15:00 | В прошлое воскресенье, в 15:00 |
+| ko | 수요일 15:00 | 지난주 토요일 15:00 · 다음 주 월요일 15:00 |
+
+Calendar strings exist for every supported locale; a custom locale without them uses English.

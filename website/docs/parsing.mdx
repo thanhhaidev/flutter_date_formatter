@@ -16,6 +16,41 @@ description: Parse strings with the same pattern syntax as format.
 
 <ParseDemo />
 
+## parseAny
+
+Use `parseAny` when an input may use more than one known pattern. Patterns are
+tried in order and the first successful parse is returned.
+
+```dart
+final value = FlutterDateFormatter.parseAny(
+  '2025-03-10',
+  patterns: ['yyyy-MM-dd', 'dd/MM/yyyy'],
+  locale: 'en',
+  strict: true,
+);
+```
+
+If every pattern fails, `parseAny` throws the last `FormatException`. Passing
+an empty pattern list throws an `ArgumentError`.
+
+For validation UIs, use `parseAnyDetailed` to inspect every attempt without
+throwing when no pattern matches:
+
+```dart
+final result = FlutterDateFormatter.parseAnyDetailed(
+  input,
+  patterns: ['yyyy-MM-dd', 'dd/MM/yyyy'],
+);
+
+if (result.matched) {
+  print(result.value);
+} else {
+  for (final attempt in result.attempts) {
+    print('${attempt.pattern}: ${attempt.error?.message}');
+  }
+}
+```
+
 :::info[Ordinals]
 For `do`, the parser tries each ordinal suffix of the locale and keeps the result whose day actually takes that suffix, so `2st March` is rejected.
 :::

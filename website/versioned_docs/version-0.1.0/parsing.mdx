@@ -1,0 +1,21 @@
+---
+title: Parsing
+description: Parse strings with the same pattern syntax as format.
+---
+
+# Parsing
+
+`parse` and `tryParse` read strings written in the same pattern syntax as `format`, including `do` ordinals and `[literal]` or `'literal'` text, so formatting and parsing round-trip.
+
+## parse / tryParse
+
+- `strict: true` rejects out-of-range values such as February 30.
+- `utc: true` returns a UTC `DateTime`.
+- `tryParse` returns `null` instead of throwing a `FormatException`.
+- Input is read in the formatter's locale: month and weekday names must be in that language. The sample input follows the locale selected in the dark bar.
+
+<ParseDemo />
+
+:::info[Ordinals]
+For `do`, the parser tries each ordinal suffix of the locale and keeps the result whose day actually takes that suffix, so `2st March` is rejected.
+:::

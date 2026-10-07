@@ -144,15 +144,15 @@ class ViDurationUnits implements DurationUnits {
 /// Vietnamese short duration units
 class ViShortDurationUnits implements DurationUnits {
   @override
-  String seconds(int seconds) => '$seconds giây';
+  String seconds(int seconds) => '${seconds}s';
   @override
-  String minutes(int minutes) => '$minutes ph';
+  String minutes(int minutes) => '${minutes}ph';
   @override
-  String hours(int hours) => '$hours h';
+  String hours(int hours) => '${hours}g';
   @override
-  String days(int days) => '$days ngày';
+  String days(int days) => '${days}n';
   @override
-  String weeks(int weeks) => '$weeks tuần';
+  String weeks(int weeks) => '${weeks}t';
   @override
   String delimiter() => ' ';
 }

@@ -1,6 +1,6 @@
 name: flutter_date_formatter
 description: A Dart and Flutter package for formatting dates and times in various locales. This package provides utilities for formatting relative dates, ordinal numbers, and more.
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/thanhhaidev/flutter_date_formatter
 repository: https://github.com/thanhhaidev/flutter_date_formatter
 issue_tracker: https://github.com/thanhhaidev/flutter_date_formatter/issues

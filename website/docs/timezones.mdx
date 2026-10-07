@@ -1,0 +1,36 @@
+---
+title: Time zones
+sidebar_label: Time zones
+description: Understand local and UTC DateTime values when formatting and parsing.
+---
+
+# Time zones
+
+`flutter_date_formatter` formats the `DateTime` value it receives. It does not
+ship a time-zone database or convert an instant between named zones.
+
+## Local values
+
+Most `DateTime` constructors create local values. Formatting preserves that
+local wall-clock value:
+
+```dart
+final local = DateTime(2025, 3, 21, 15, 30);
+local.format(pattern: 'yyyy-MM-dd HH:mm'); // local clock time
+```
+
+## UTC values
+
+Use `toUtc()` or parse with `utc: true` when the input represents UTC:
+
+```dart
+final parsed = FlutterDateFormatter('yyyy-MM-dd HH:mm:ss')
+    .parse('2025-03-21 15:30:00', utc: true);
+
+assert(parsed.isUtc);
+```
+
+The `utc` option controls the `DateTime` returned by parsing; it does not
+apply a named-zone conversion. For IANA zones such as
+`Asia/Ho_Chi_Minh`, convert the value with a dedicated timezone package
+before passing it to the formatter.

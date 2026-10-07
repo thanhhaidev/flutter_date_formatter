@@ -259,6 +259,16 @@ void main() {
 
     test('uses the locale strings', () {
       expect(duration.humanize(locale: 'vi'), '1 ngày 2 giờ');
+      expect(duration.humanize(locale: 'vi', short: true), '1n 2g');
+      expect(
+        const Duration(days: 7, minutes: 2, seconds: 3).humanize(
+          locale: 'vi',
+          short: true,
+          maxUnits: 3,
+          largestUnit: Unit.week,
+        ),
+        '1t 2ph 3s',
+      );
       expect(duration.humanize(locale: 'xx'), '1 day 2 hours');
     });
 
@@ -353,6 +363,35 @@ void main() {
         throwsFormatException,
       );
       expect(formatter.tryParse('not a date'), isNull);
+    });
+
+    test('parseAny accepts the first matching pattern', () {
+      expect(
+        FlutterDateFormatter.parseAny(
+          '05/03/2025',
+          patterns: ['yyyy-MM-dd', 'dd/MM/yyyy'],
+        ),
+        DateTime(2025, 3, 5),
+      );
+      expect(
+        () => FlutterDateFormatter.parseAny('not a date', patterns: ['yyyy']),
+        throwsFormatException,
+      );
+      expect(
+        () => FlutterDateFormatter.parseAny('2025', patterns: []),
+        throwsArgumentError,
+      );
+    });
+
+    test('parseAnyDetailed exposes pattern diagnostics', () {
+      final result = FlutterDateFormatter.parseAnyDetailed(
+        '05/03/2025',
+        patterns: ['yyyy-MM-dd', 'dd/MM/yyyy'],
+      );
+      expect(result.value, DateTime(2025, 3, 5));
+      expect(result.attempts, hasLength(2));
+      expect(result.attempts.first.matched, isFalse);
+      expect(result.attempts.last.matched, isTrue);
     });
   });
 

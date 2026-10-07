@@ -1,6 +1,6 @@
 name: Release
 
-# Push a tag such as v0.1.0 to publish that version to pub.dev. When this
+# Push a tag such as v0.2.0 to publish that version to pub.dev. When this
 # workflow succeeds, "Deploy docs" redeploys the site from main (the
 # github-pages environment only accepts deployments from main, not from tags).
 # See RELEASING.md.

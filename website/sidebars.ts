@@ -6,7 +6,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Getting Started',
       collapsible: false,
-      items: ['index', 'configuration'],
+      items: ['index', 'configuration', 'timezones'],
     },
     {
       type: 'category',

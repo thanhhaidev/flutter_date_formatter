@@ -20,29 +20,6 @@ Format a `DateTime` with an `intl` pattern, plus two extras: `do` for the day of
 
 <OrdinalDemo />
 
-## Date ranges
-
-<DateRangeDemo />
-
-Use `formatRange` for a localized range with the locale's default date
-pattern. The optional `pattern` uses the same syntax as `format`, including
-ordinal days and literal text.
-
-```dart
-final start = DateTime(2025, 3, 1);
-final end = DateTime(2025, 3, 5);
-
-start.formatRange(end); // Mar 1–5, 2025
-start.formatRange(end, locale: 'vi');
-start.formatRange(end, pattern: 'do MMMM yyyy');
-```
-
-The equivalent static API is
-`FlutterDateFormatter.formatDateTimeRange(start, end)`. Endpoints in the same
-month and year are compacted when using the default pattern; endpoints on the
-same calendar day are formatted once. An end before the start throws an
-`ArgumentError`.
-
 ## Pattern cheat sheet
 
 | Token | Meaning |

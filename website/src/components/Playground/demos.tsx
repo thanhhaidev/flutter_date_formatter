@@ -71,6 +71,50 @@ export function OrdinalDemo() {
   );
 }
 
+export function DateRangeDemo() {
+  const p = usePlayground();
+  const [start, setStart] = useState('2025-03-01T00:00:00');
+  const [end, setEnd] = useState('2025-03-05T00:00:00');
+  const [pattern, setPattern] = useState('');
+  const presets: Record<string, [string, string]> = {
+    'same day': ['2025-03-01T09:00:00', '2025-03-01T17:00:00'],
+    'same month': ['2025-03-01T00:00:00', '2025-03-05T00:00:00'],
+    'cross month': ['2025-03-28T00:00:00', '2025-04-03T00:00:00'],
+    'cross year': ['2025-12-29T00:00:00', '2026-01-03T00:00:00'],
+  };
+  const result = p.call('formatRange', {
+    start,
+    end,
+    ...(pattern ? {pattern} : {}),
+  });
+  return (
+    <Playground
+      controls={
+        <>
+          <DateInput label="start" value={start} onChange={setStart} />
+          <DateInput label="end" value={end} onChange={setEnd} />
+          <TextInput label="pattern (optional)" value={pattern} onChange={setPattern} width={220} />
+          <Chips
+            values={['default', 'do MMMM yyyy', 'yMd']}
+            selected={pattern || 'default'}
+            onSelect={(value) => setPattern(value === 'default' ? '' : value)}
+          />
+          <Chips
+            values={Object.keys(presets)}
+            onSelect={(value) => {
+              const [nextStart, nextEnd] = presets[value];
+              setStart(nextStart);
+              setEnd(nextEnd);
+            }}
+          />
+        </>
+      }
+      output={<Output result={result} />}
+      code={`final start = ${dartDate(start)};\nfinal end = ${dartDate(end)};\n\nstart.formatRange(\n  end,\n  locale: ${q(p.locale)},${pattern ? `\n  pattern: ${q(pattern)},` : ''}\n);`}
+    />
+  );
+}
+
 /* ------------------------------------------------------------ Relative time */
 
 const OFFSETS: [string, number][] = [
@@ -206,7 +250,7 @@ export function DurationDemo() {
           <Select label="largestUnit" value={largest} options={DURATION_UNITS} onChange={setLargest} width={120} />
           <Select label="smallestUnit" value={smallest} options={DURATION_UNITS} onChange={setSmallest} width={120} />
           <TextInput label="delimiter" placeholder="locale default" value={delimiter} onChange={setDelimiter} width={130} />
-          <Switch label="short" value={short} onChange={setShort} />
+          <Switch label="short units" value={short} onChange={setShort} />
         </>
       }
       output={
@@ -508,7 +552,7 @@ export function LocaleGallery() {
   const rows = p.locales.filter((code) => code.toLowerCase().includes(filter.toLowerCase()));
   return (
     <Playground
-      controls={<TextInput label="filter" value={filter} onChange={setFilter} placeholder="e.g. zh" />}
+      controls={<TextInput label="filter" value={filter} onChange={setFilter} placeholder={`e.g. ${p.locale}`} />}
       output={
         !p.ready ? (
           <Output result={{error: 'Loading…'}} />
