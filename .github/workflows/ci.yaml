@@ -17,17 +17,46 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
 
       - name: Install dart dependencies
         run: dart pub get
 
       - name: Analyze package
-        run: dart analyze lib test
+        run: dart analyze --fatal-infos lib test
 
       - name: Verify package formatting
         run: dart format --set-exit-if-changed lib test
 
       - name: Run tests
         run: dart test --reporter=github --coverage=./coverage/reports
+
+      # Dart reads the TZ variable on Linux and macOS only, so this step
+      # covers the daylight saving time tests that are skipped in UTC.
+      - name: Run tests in a time zone with daylight saving time
+        if: runner.os != 'Windows'
+        run: dart test --reporter=github
+        env:
+          TZ: America/New_York
+
+  check-lower-bounds:
+    name: Test with the lowest supported dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      # Only the runtime dependencies are downgraded: old dev dependencies of
+      # the test runner don't build with current Dart SDKs.
+      - name: Downgrade runtime dependencies
+        run: dart pub downgrade intl meta
+
+      - name: Analyze package
+        run: dart analyze --fatal-infos lib test
+
+      - name: Run tests
+        run: dart test --reporter=github

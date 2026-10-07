@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_date_formatter/src/enums/unit.dart';
 import 'package:flutter_date_formatter/src/extensions/date_time_ext.dart';
 import 'package:flutter_date_formatter/src/models/models.dart';
@@ -20,19 +22,22 @@ class RelativeDateTimeUtils {
   static String format(
     DateTime firstDateTime,
     DateTime secondDateTime,
-    Locale locale, {
+    DateFormatterLocale locale, {
     bool short = false,
     bool withPrefixAndSuffix = true,
   }) {
-    final isFirstDateTimeSameOrAfterSecondDateTime =
-        firstDateTime.isSameOrAfter(secondDateTime);
+    // Equal dates count as past ("a moment ago"), as in moment.js.
+    final isFuture = firstDateTime.isAfter(secondDateTime);
 
-    final relativeDateTime =
+    var relativeDateTime =
         short ? locale.shortRelativeDateTime() : locale.relativeDateTime();
+    if (relativeDateTime is DirectionalRelativeDateTime) {
+      relativeDateTime = relativeDateTime.forDirection(isFuture: isFuture);
+    }
     String prefix;
     String suffix;
 
-    if (isFirstDateTimeSameOrAfterSecondDateTime) {
+    if (isFuture) {
       prefix = relativeDateTime.prefixFromNow();
       suffix = relativeDateTime.suffixFromNow();
     } else {
@@ -40,20 +45,28 @@ class RelativeDateTimeUtils {
       suffix = relativeDateTime.suffixAgo();
     }
 
+    // Round first and compare the rounded values, so a value just below a
+    // threshold never shows the next bucket's number (e.g. "45 minutes").
     final seconds = firstDateTime
         .diff(secondDateTime, unit: Unit.second, asFloat: true)
-        .abs();
+        .abs()
+        .round();
     final minutes = firstDateTime
         .diff(secondDateTime, unit: Unit.minute, asFloat: true)
-        .abs();
+        .abs()
+        .round();
     final hours = firstDateTime
         .diff(secondDateTime, unit: Unit.hour, asFloat: true)
-        .abs();
-    final days =
-        firstDateTime.diff(secondDateTime, unit: Unit.day, asFloat: true).abs();
+        .abs()
+        .round();
+    final days = firstDateTime
+        .diff(secondDateTime, unit: Unit.day, asFloat: true)
+        .abs()
+        .round();
     final months = firstDateTime
         .diff(secondDateTime, unit: Unit.month, asFloat: true)
-        .abs();
+        .abs()
+        .round();
     final years = firstDateTime
         .diff(secondDateTime, unit: Unit.year, asFloat: true)
         .abs();
@@ -61,25 +74,25 @@ class RelativeDateTimeUtils {
     String result;
 
     if (seconds < 45) {
-      result = relativeDateTime.lessThanOneMinute(seconds.round());
+      result = relativeDateTime.lessThanOneMinute(max(1, seconds));
     } else if (seconds < 90) {
-      result = relativeDateTime.aboutAMinute(minutes.round());
+      result = relativeDateTime.aboutAMinute(minutes);
     } else if (minutes < 45) {
-      result = relativeDateTime.minutes(minutes.round());
+      result = relativeDateTime.minutes(minutes);
     } else if (minutes < 90) {
-      result = relativeDateTime.aboutAnHour(minutes.round());
+      result = relativeDateTime.aboutAnHour(minutes);
     } else if (hours < 24) {
-      result = relativeDateTime.hours(hours.round());
+      result = relativeDateTime.hours(hours);
     } else if (hours < 48) {
-      result = relativeDateTime.aDay(hours.round());
+      result = relativeDateTime.aDay(hours);
     } else if (days < 30) {
-      result = relativeDateTime.days(days.round());
+      result = relativeDateTime.days(days);
     } else if (days < 60) {
-      result = relativeDateTime.aboutAMonth(days.round());
-    } else if (days < 365) {
-      result = relativeDateTime.months(months.round());
+      result = relativeDateTime.aboutAMonth(days);
+    } else if (months < 12) {
+      result = relativeDateTime.months(months);
     } else if (years < 2) {
-      result = relativeDateTime.aboutAYear(months.round());
+      result = relativeDateTime.aboutAYear(months);
     } else {
       result = relativeDateTime.years(years.round());
     }

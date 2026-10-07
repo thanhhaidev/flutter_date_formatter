@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Norwegian-Bokm-Norway locale
-class NbLocale extends Locale {
+class NbLocale extends DateFormatterLocale {
   @override
   String code() => 'nb';
 
@@ -16,6 +16,15 @@ class NbLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => NbShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => NbCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => NbDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => NbShortDurationUnits();
 }
 
 /// Norwegian-Bokm-Norway relative date time
@@ -27,7 +36,7 @@ class NbRelativeDateTime implements RelativeDateTime {
   @override
   String suffixAgo() => 'siden';
   @override
-  String suffixFromNow() => 'fra nå';
+  String suffixFromNow() => '';
   @override
   String lessThanOneMinute(int seconds) => 'ett øyeblikk';
   @override
@@ -89,3 +98,69 @@ class NbShortRelativeDateTime implements RelativeDateTime {
   @override
   String wordSeparator() => ' ';
 }
+
+/// Norwegian-Bokm-Norway calendar date time
+class NbCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'I dag kl. $time';
+  @override
+  String nextDay(String time) => 'I morgen kl. $time';
+  @override
+  String lastDay(String time) => 'I går kl. $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '${_capitalize(weekday)} kl. $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Forrige $weekday kl. $time';
+}
+
+/// Norwegian-Bokm-Norway duration units
+class NbDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => _plural(seconds, 'sekund', 'sekunder');
+  @override
+  String minutes(int minutes) => _plural(minutes, 'minutt', 'minutter');
+  @override
+  String hours(int hours) => _plural(hours, 'time', 'timer');
+  @override
+  String days(int days) => _plural(days, 'dag', 'dager');
+  @override
+  String weeks(int weeks) => _plural(weeks, 'uke', 'uker');
+  @override
+  String delimiter() => ' ';
+}
+
+/// Norwegian-Bokm-Norway short duration units
+class NbShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds sek';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours t';
+  @override
+  String days(int days) => '$days d';
+  @override
+  String weeks(int weeks) => '$weeks u';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Picks the CLDR plural form (one / other) for Norwegian Bokmål.
+String _plural(int n, String one, String other) =>
+    n == 1 ? '1 $one' : '$n $other';
+
+/// Returns [text] with its first letter in upper case.
+String _capitalize(String text) =>
+    text.isEmpty ? text : '${text[0].toUpperCase()}${text.substring(1)}';

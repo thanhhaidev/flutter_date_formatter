@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// English locale
-class EnLocale extends Locale {
+class EnLocale extends DateFormatterLocale {
   @override
   String code() => 'en';
 
@@ -16,6 +16,15 @@ class EnLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => EnShortRelativeTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => EnCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => EnDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => EnShortDurationUnits();
 
   String _getOrdinalSuffix(int n) {
     const ordinals = ['st', 'nd', 'rd', 'th'];
@@ -98,4 +107,62 @@ class EnShortRelativeTime implements RelativeDateTime {
   String years(int years) => '${years}y';
   @override
   String wordSeparator() => ' ';
+}
+
+/// English calendar date time
+class EnCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Today at $time';
+  @override
+  String nextDay(String time) => 'Tomorrow at $time';
+  @override
+  String lastDay(String time) => 'Yesterday at $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday at $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      isSameWeek ? '$weekday at $time' : 'Last $weekday at $time';
+}
+
+/// English duration units
+class EnDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => seconds == 1 ? '1 second' : '$seconds seconds';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 minute' : '$minutes minutes';
+  @override
+  String hours(int hours) => hours == 1 ? '1 hour' : '$hours hours';
+  @override
+  String days(int days) => days == 1 ? '1 day' : '$days days';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 week' : '$weeks weeks';
+  @override
+  String delimiter() => ' ';
+}
+
+/// English short duration units
+class EnShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '${seconds}s';
+  @override
+  String minutes(int minutes) => '${minutes}m';
+  @override
+  String hours(int hours) => '${hours}h';
+  @override
+  String days(int days) => '${days}d';
+  @override
+  String weeks(int weeks) => '${weeks}w';
+  @override
+  String delimiter() => ' ';
 }

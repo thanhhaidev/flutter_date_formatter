@@ -48,3 +48,15 @@ abstract class RelativeDateTime {
   /// Returns the word separator.
   String wordSeparator();
 }
+
+/// A [RelativeDateTime] whose unit texts depend on the direction, for
+/// languages that inflect units differently in the past and the future
+/// (for example Czech "před 5 minutami" vs "za 5 minut").
+///
+/// The relative formatter calls [forDirection] once and uses the returned
+/// instance for the prefix, the unit text and the suffix.
+abstract class DirectionalRelativeDateTime implements RelativeDateTime {
+  /// Returns the [RelativeDateTime] to use for past ([isFuture] is `false`)
+  /// or future ([isFuture] is `true`) dates.
+  RelativeDateTime forDirection({required bool isFuture});
+}

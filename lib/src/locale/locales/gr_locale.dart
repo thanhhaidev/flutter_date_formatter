@@ -1,9 +1,9 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Greek Locale
-class GrLocale extends Locale {
+class GrLocale extends DateFormatterLocale {
   @override
-  String code() => 'gr';
+  String code() => 'el';
 
   @override
   String ordinal(int n) => '';
@@ -16,6 +16,15 @@ class GrLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => GrShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => GrCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => GrDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => GrShortDurationUnits();
 }
 
 /// Greek relative date time
@@ -23,11 +32,11 @@ class GrRelativeDateTime implements RelativeDateTime {
   @override
   String prefixAgo() => '';
   @override
-  String prefixFromNow() => '';
+  String prefixFromNow() => 'σε';
   @override
-  String suffixAgo() => 'πρίν';
+  String suffixAgo() => 'πριν';
   @override
-  String suffixFromNow() => 'απο τώρα';
+  String suffixFromNow() => '';
   @override
   String lessThanOneMinute(int seconds) => 'μια στιγμή';
   @override
@@ -88,4 +97,74 @@ class GrShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years χρ';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Greek calendar date time
+class GrCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Σήμερα ${_at(time)} $time';
+  @override
+  String nextDay(String time) => 'Αύριο ${_at(time)} $time';
+  @override
+  String lastDay(String time) => 'Χθες ${_at(time)} $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday ${_at(time)} $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    // Σάββατο is neuter; the other weekdays are feminine.
+    final last = date.weekday == DateTime.saturday
+        ? 'Το προηγούμενο'
+        : 'Την προηγούμενη';
+    return '$last $weekday ${_at(time)} $time';
+  }
+}
+
+/// Greek duration units
+class GrDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '1 δευτερόλεπτο' : '$seconds δευτερόλεπτα';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 λεπτό' : '$minutes λεπτά';
+  @override
+  String hours(int hours) => hours == 1 ? '1 ώρα' : '$hours ώρες';
+  @override
+  String days(int days) => days == 1 ? '1 μέρα' : '$days μέρες';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 εβδομάδα' : '$weeks εβδομάδες';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Greek short duration units
+class GrShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds δευτ.';
+  @override
+  String minutes(int minutes) => '$minutes λ.';
+  @override
+  String hours(int hours) => '$hours ώ.';
+  @override
+  String days(int days) => '$days ημ.';
+  @override
+  String weeks(int weeks) => '$weeks εβδ.';
+  @override
+  String delimiter() => ' ';
+}
+
+/// "στη" before one o'clock ("στη 1:00"), otherwise "στις".
+String _at(String time) {
+  final hour = RegExp(r'\d+').firstMatch(time)?.group(0);
+  return hour != null && int.parse(hour) == 1 ? 'στη' : 'στις';
 }

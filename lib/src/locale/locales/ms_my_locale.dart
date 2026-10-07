@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Malay-Malaysia locale
-class MsMyLocale extends Locale {
+class MsMyLocale extends DateFormatterLocale {
   @override
   String code() => 'ms_my';
 
@@ -16,6 +16,15 @@ class MsMyLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => MsMyShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => MsMyCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => MsMyDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => MsMyShortDurationUnits();
 }
 
 /// Malay-Malaysia relative date time
@@ -88,4 +97,62 @@ class MsMyShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years thn';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Malay-Malaysia calendar date time
+class MsMyCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Hari ini pukul $time';
+  @override
+  String nextDay(String time) => 'Esok pukul $time';
+  @override
+  String lastDay(String time) => 'Kelmarin pukul $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday pukul $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday lepas pukul $time';
+}
+
+/// Malay-Malaysia duration units
+class MsMyDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds saat';
+  @override
+  String minutes(int minutes) => '$minutes minit';
+  @override
+  String hours(int hours) => '$hours jam';
+  @override
+  String days(int days) => '$days hari';
+  @override
+  String weeks(int weeks) => '$weeks minggu';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Malay-Malaysia short duration units
+class MsMyShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds saat';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours j';
+  @override
+  String days(int days) => '$days h';
+  @override
+  String weeks(int weeks) => '$weeks mgu';
+  @override
+  String delimiter() => ' ';
 }

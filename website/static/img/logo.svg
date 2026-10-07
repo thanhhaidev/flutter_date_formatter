@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="232" height="32" viewBox="0 0 232 32" fill="none">
+  <rect x="1" y="4" width="24" height="24" rx="6" fill="#06B873"/>
+  <rect x="1" y="4" width="24" height="7" rx="3" fill="#03817A"/>
+  <path d="M8 2v5M18 2v5" stroke="#E6F8F1" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M7.5 21.5l4 -6.5h4.5l-4 6.5z" fill="#0F2329"/>
+  <text x="33" y="22" font-family="Rethink Sans, ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="800" letter-spacing="-0.6" fill="#FFFFFF" textLength="196" lengthAdjust="spacingAndGlyphs">flutter_date_formatter</text>
+</svg>

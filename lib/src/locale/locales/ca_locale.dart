@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Catalan locale
-class CaLocale extends Locale {
+class CaLocale extends DateFormatterLocale {
   @override
   String code() => 'ca';
 
@@ -16,6 +16,15 @@ class CaLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => CaShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => CaCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => CaDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => CaShortDurationUnits();
 
   String _getOrdinalSuffix(int n) {
     String ord;
@@ -85,9 +94,9 @@ class CaShortRelativeDateTime implements RelativeDateTime {
   @override
   String minutes(int minutes) => '$minutes min';
   @override
-  String aboutAnHour(int minutes) => '~1 hr';
+  String aboutAnHour(int minutes) => '~1 h';
   @override
-  String hours(int hours) => '$hours hr';
+  String hours(int hours) => '$hours h';
   @override
   String aDay(int hours) => '~1 dia';
   @override
@@ -103,3 +112,70 @@ class CaShortRelativeDateTime implements RelativeDateTime {
   @override
   String wordSeparator() => ' ';
 }
+
+/// Catalan calendar date time
+class CaCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Avui ${_at(time)} $time';
+  @override
+  String nextDay(String time) => 'Demà ${_at(time)} $time';
+  @override
+  String lastDay(String time) => 'Ahir ${_at(time)} $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '${_capitalize(weekday)} ${_at(time)} $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'El $weekday passat ${_at(time)} $time';
+}
+
+/// Catalan duration units
+class CaDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => seconds == 1 ? '1 segon' : '$seconds segons';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 minut' : '$minutes minuts';
+  @override
+  String hours(int hours) => hours == 1 ? '1 hora' : '$hours hores';
+  @override
+  String days(int days) => days == 1 ? '1 dia' : '$days dies';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 setmana' : '$weeks setmanes';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Catalan short duration units
+class CaShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds s';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours h';
+  @override
+  String days(int days) => '$days d';
+  @override
+  String weeks(int weeks) => '$weeks setm.';
+  @override
+  String delimiter() => ' ';
+}
+
+/// "a la" before one o'clock ("a la 1:00"), otherwise "a les".
+String _at(String time) {
+  final hour = RegExp(r'\d+').firstMatch(time)?.group(0);
+  return hour != null && int.parse(hour) == 1 ? 'a la' : 'a les';
+}
+
+String _capitalize(String text) =>
+    text.isEmpty ? text : '${text[0].toUpperCase()}${text.substring(1)}';

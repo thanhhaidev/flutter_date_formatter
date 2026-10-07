@@ -1,0 +1,10 @@
+name: date_formatter_web_bridge
+description: Compiles flutter_date_formatter to JavaScript for the docs site.
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter_date_formatter:
+    path: ../../

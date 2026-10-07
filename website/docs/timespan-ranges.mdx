@@ -1,0 +1,30 @@
+---
+title: TimeSpan & ranges
+description: Interval set operations, iteration and clamping.
+---
+
+# TimeSpan & ranges
+
+`TimeSpan` models an interval between two dates, with set operations and value equality. `rangeTo` and `iterate` step through a range; `clamp`, `earliest` and `latest` compare dates.
+
+## Set operations
+
+<TimeSpanDemo />
+
+| Method | Returns |
+| --- | --- |
+| `intersects(other)` | true when the spans share an instant, including containment |
+| `merge(other)` | the union; throws `RangeError` when they don't intersect |
+| `getIntersection(other)` | the overlap, or `null` |
+| `getDifferences(other)` | the parts not covered by `other` (0, 1 or 2 spans) |
+| `symmetricDifference(other)` | the parts covered by only one span |
+
+## Iterating
+
+Steps are calendar steps: a month step from the 31st lands on the last day of shorter months, and day steps keep the wall-clock time across DST.
+
+<IterateDemo />
+
+## clamp, earliest, latest
+
+<ClampDemo />

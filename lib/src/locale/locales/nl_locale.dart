@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Dutch locale
-class NlLocale extends Locale {
+class NlLocale extends DateFormatterLocale {
   @override
   String code() => 'nl';
 
@@ -18,6 +18,15 @@ class NlLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => NlShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => NlCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => NlDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => NlShortDurationUnits();
 }
 
 /// Dutch relative date time
@@ -51,7 +60,7 @@ class NlRelativeDateTime implements RelativeDateTime {
   @override
   String aboutAYear(int year) => 'ongeveer één jaar';
   @override
-  String years(int years) => '$years jaren';
+  String years(int years) => '$years jaar';
   @override
   String wordSeparator() => ' ';
 }
@@ -91,3 +100,69 @@ class NlShortRelativeDateTime implements RelativeDateTime {
   @override
   String wordSeparator() => ' ';
 }
+
+/// Dutch calendar date time
+class NlCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Vandaag om $time';
+  @override
+  String nextDay(String time) => 'Morgen om $time';
+  @override
+  String lastDay(String time) => 'Gisteren om $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '${_capitalize(weekday)} om $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Afgelopen $weekday om $time';
+}
+
+/// Dutch duration units
+class NlDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => _plural(seconds, 'seconde', 'seconden');
+  @override
+  String minutes(int minutes) => _plural(minutes, 'minuut', 'minuten');
+  @override
+  String hours(int hours) => '$hours uur';
+  @override
+  String days(int days) => _plural(days, 'dag', 'dagen');
+  @override
+  String weeks(int weeks) => _plural(weeks, 'week', 'weken');
+  @override
+  String delimiter() => ' ';
+}
+
+/// Dutch short duration units
+class NlShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds sec';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours u';
+  @override
+  String days(int days) => '$days d';
+  @override
+  String weeks(int weeks) => '$weeks w';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Picks the CLDR plural form (one / other) for Dutch.
+String _plural(int n, String one, String other) =>
+    n == 1 ? '1 $one' : '$n $other';
+
+/// Returns [text] with its first letter in upper case.
+String _capitalize(String text) =>
+    text.isEmpty ? text : '${text[0].toUpperCase()}${text.substring(1)}';

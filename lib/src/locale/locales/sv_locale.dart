@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Swedish Locale
-class SvLocale extends Locale {
+class SvLocale extends DateFormatterLocale {
   @override
   String code() => 'sv';
 
@@ -17,10 +17,20 @@ class SvLocale extends Locale {
   @override
   RelativeDateTime shortRelativeDateTime() => SvShortRelativeDateTime();
 
+  @override
+  CalendarDateTime calendarDateTime() => SvCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => SvDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => SvShortDurationUnits();
+
   String _getOrdinalSuffix(int n) {
     final b = n % 10;
-    final ord = (b == 1 || b == 2) ? 'a' : 'e';
-    return ord;
+    final rem100 = n % 100;
+    // 1:a, 2:a, 21:a, 22:a ... but 11:e and 12:e.
+    return ((b == 1 || b == 2) && rem100 != 11 && rem100 != 12) ? 'a' : 'e';
   }
 }
 
@@ -94,4 +104,63 @@ class SvShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years år';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Swedish calendar date time
+class SvCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Idag $time';
+  @override
+  String nextDay(String time) => 'Imorgon $time';
+  @override
+  String lastDay(String time) => 'Igår $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'På $weekday $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'I ${weekday}s $time';
+}
+
+/// Swedish duration units
+class SvDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '1 sekund' : '$seconds sekunder';
+  @override
+  String minutes(int minutes) => minutes == 1 ? '1 minut' : '$minutes minuter';
+  @override
+  String hours(int hours) => hours == 1 ? '1 timme' : '$hours timmar';
+  @override
+  String days(int days) => days == 1 ? '1 dag' : '$days dagar';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '1 vecka' : '$weeks veckor';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Swedish short duration units
+class SvShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds sek';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours tim';
+  @override
+  String days(int days) => '$days d';
+  @override
+  String weeks(int weeks) => '$weeks v';
+  @override
+  String delimiter() => ' ';
 }

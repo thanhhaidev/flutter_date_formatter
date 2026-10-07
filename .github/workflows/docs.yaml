@@ -1,0 +1,71 @@
+name: Deploy docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'website/**'
+      - 'CHANGELOG.md'
+      - '.github/workflows/docs.yaml'
+  pull_request:
+    paths:
+      - 'website/**'
+  workflow_dispatch:
+  # Called by the release workflow after publishing, so the changelog shows
+  # the new tag's date and pub.dev link.
+  workflow_call:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tags give the changelog its release dates
+      - uses: dart-lang/setup-dart@v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # `npm run build` first compiles the package to JavaScript (dart:build).
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: website/build
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,78 @@
+---
+slug: /
+title: Getting started
+sidebar_label: Introduction
+description: Install flutter_date_formatter and format your first date.
+---
+
+# Getting started
+
+`flutter_date_formatter` formats, parses and computes dates in 55+ locales. It works in any Dart or Flutter project and adds no setup step: the `intl` date data is loaded on first use.
+
+Every example on this site runs the real package, compiled from Dart to JavaScript. Change the inputs, switch the **locale** in the dark bar, and copy the code.
+
+## Install
+
+<Steps>
+<Step title="Add the package">
+
+```bash
+dart pub add flutter_date_formatter
+# or, in a Flutter app
+flutter pub add flutter_date_formatter
+```
+
+</Step>
+<Step title="Import it">
+
+```dart
+import 'package:flutter_date_formatter/flutter_date_formatter.dart';
+```
+
+</Step>
+<Step title="Format a date">
+
+```dart
+final date = DateTime(2025, 3, 21, 15, 30);
+
+date.format(pattern: 'do MMMM yyyy');           // 21st March 2025
+date.formatRelative(locale: 'vi');              // 3 giờ trước
+date.formatCalendar();                          // Yesterday at 3:30 PM
+const Duration(hours: 2, minutes: 5).humanize(); // 2 hours 5 minutes
+```
+
+</Step>
+</Steps>
+
+## Try it
+
+<FormatDemo />
+
+## Explore the API
+
+<Cards>
+  <Card to="/docs/formatting" icon="Aa" title="Formatting" tags={['format', 'ordinal']}>
+    intl patterns plus <code>do</code> ordinals and <code>[literal]</code> text.
+  </Card>
+  <Card to="/docs/relative-time" icon="↺" title="Relative time" tags={['ago', 'in']}>
+    "5 minutes ago", "in 3 days", long or short.
+  </Card>
+  <Card to="/docs/calendar" icon="▦" title="Calendar time" tags={['chat', 'feed']}>
+    "Today at 3:00 PM", "Last Monday at…", aware of the week.
+  </Card>
+  <Card to="/docs/durations" icon="⏱" title="Durations" tags={['humanize']}>
+    "2 hours 5 minutes" with correct plurals in every locale.
+  </Card>
+  <Card to="/docs/parsing" icon="⇥" title="Parsing" tags={['parse', 'tryParse']}>
+    Read strings back with the same pattern syntax.
+  </Card>
+  <Card to="/docs/datetime-helpers" icon="ƒ" title="DateTime helpers" tags={['startOf', 'diff']}>
+    Week numbers, quarters, DST-safe arithmetic and comparisons.
+  </Card>
+  <Card to="/docs/timespan-ranges" icon="↔" title="TimeSpan & ranges" tags={['merge', 'iterate']}>
+    Interval set operations, iteration and clamping.
+  </Card>
+  <Card to="/docs/locales" icon="文" title="Locales" tags={['55+ locales']}>
+    Every locale side by side, plus lookup and fallback rules.
+  </Card>
+</Cards>

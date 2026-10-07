@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Cambodian Locale
-class KmLocale extends Locale {
+class KmLocale extends DateFormatterLocale {
   @override
   String code() => 'km';
 
@@ -16,6 +16,15 @@ class KmLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => KmShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => KmCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => KmDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => KmShortDurationUnits();
 }
 
 /// Cambodian relative date time
@@ -88,4 +97,62 @@ class KmShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years ឆ';
   @override
   String wordSeparator() => '';
+}
+
+/// Cambodian calendar date time
+class KmCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'ថ្ងៃនេះ ម៉ោង $time';
+  @override
+  String nextDay(String time) => 'ស្អែក ម៉ោង $time';
+  @override
+  String lastDay(String time) => 'ម្សិលមិញ ម៉ោង $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday ម៉ោង $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '$weekday សប្តាហ៍មុន ម៉ោង $time';
+}
+
+/// Cambodian duration units
+class KmDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds វិនាទី';
+  @override
+  String minutes(int minutes) => '$minutes នាទី';
+  @override
+  String hours(int hours) => '$hours ម៉ោង';
+  @override
+  String days(int days) => '$days ថ្ងៃ';
+  @override
+  String weeks(int weeks) => '$weeks សប្តាហ៍';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Cambodian short duration units
+class KmShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds វិ';
+  @override
+  String minutes(int minutes) => '$minutes នាទី';
+  @override
+  String hours(int hours) => '$hours ម៉ោង';
+  @override
+  String days(int days) => '$days ថ្ងៃ';
+  @override
+  String weeks(int weeks) => '$weeks សប្តាហ៍';
+  @override
+  String delimiter() => ' ';
 }

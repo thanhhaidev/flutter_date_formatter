@@ -1,30 +1,31 @@
+import 'package:flutter_date_formatter/src/config/date_formatter_config.dart';
 import 'package:flutter_date_formatter/src/enums/enums.dart';
 import 'package:flutter_date_formatter/src/utils/date_time_utils.dart';
 
 /// Extension methods for the [DateTime] class.
 extension DateTimeExtensions on DateTime {
   /// Checks if the DateTime is in the future.
-  bool get isFuture => isAfter(DateTime.now());
+  bool get isFuture => isAfter(DateFormatterConfig.now());
 
   /// Checks if the DateTime is in the past.
-  bool get isPast => isBefore(DateTime.now());
+  bool get isPast => isBefore(DateFormatterConfig.now());
 
   /// Checks if the DateTime is today.
   bool get isToday {
-    final now = DateTime.now();
+    final now = DateFormatterConfig.now();
     return isSame(now, unit: Unit.day);
   }
 
   /// Checks if the DateTime is yesterday.
   bool get isYesterday {
-    final now = DateTime.now();
+    final now = DateFormatterConfig.now();
     final yesterday = now.subDays(1);
     return isSame(yesterday, unit: Unit.day);
   }
 
   /// Checks if the DateTime is tomorrow.
   bool get isTomorrow {
-    final now = DateTime.now();
+    final now = DateFormatterConfig.now();
     final tomorrow = now.addDays(1);
     return isSame(tomorrow, unit: Unit.day);
   }
@@ -91,9 +92,26 @@ extension DateTimeExtensions on DateTime {
     return DateTime(year, month + 1, 0).day;
   }
 
-  /// Gets the week number of the year
+  /// Gets the ISO-8601 week number of the year (1-53).
+  ///
+  /// Weeks start on Monday, and week 1 is the week that contains the first
+  /// Thursday of the year, so the first days of January can belong to the
+  /// last week of the previous year, and the last days of December to week 1
+  /// of the next year.
   int get weekOfYear {
-    return ((dayOfYear - dayOfWeek + 10) / 7).floor();
+    int weeksInYear(int year) {
+      final jan1 = DateTime(year).weekday;
+      final isLeap =
+          (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0));
+      return jan1 == DateTime.thursday || (isLeap && jan1 == DateTime.wednesday)
+          ? 53
+          : 52;
+    }
+
+    final week = (dayOfYear - weekday + 10) ~/ 7;
+    if (week < 1) return weeksInYear(year - 1);
+    if (week > weeksInYear(year)) return 1;
+    return week;
   }
 
   /// Gets the quarter of the year.
@@ -116,7 +134,7 @@ extension DateTimeExtensions on DateTime {
   /// Returns the start of the quarter.
   DateTime get startOfQuarter {
     final quarter = quarterOfYear;
-    return copyWith(month: (quarter - 1) * 3 + 1).startOfMonth;
+    return copyWith(month: (quarter - 1) * 3 + 1, day: 1).startOfMonth;
   }
 
   /// Returns the end of the day.
@@ -134,26 +152,25 @@ extension DateTimeExtensions on DateTime {
   /// Returns the end of the quarter.
   DateTime get endOfQuarter {
     final quarter = quarterOfYear;
-    return copyWith(month: quarter * 3).endOfMonth;
+    return copyWith(month: quarter * 3, day: 1).endOfMonth;
   }
 
   /// Get the index of the closest day in the [dates] list.
   int indexOfClosestDay(Iterable<DateTime> dates) {
-    if (dates.isEmpty) return -1;
+    var closestIndex = -1;
+    int? minDifference;
+    var index = 0;
 
-    var closest = dates.first;
-    var minDifference = closest.difference(this).inMilliseconds.abs();
-
-    for (final date in dates.skip(1)) {
-      final diff = date.difference(this).inMilliseconds.abs();
-      if (diff < minDifference) {
-        closest = date;
+    for (final date in dates) {
+      final diff = date.difference(this).inMicroseconds.abs();
+      if (minDifference == null || diff < minDifference) {
+        closestIndex = index;
         minDifference = diff;
       }
+      index++;
     }
 
-    // Return the index of the closest date
-    return dates.toList().indexOf(closest);
+    return closestIndex;
   }
 
   /// Get the closest day to the current one.
@@ -164,10 +181,15 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Returns a copy of the DateTime.
-  DateTime clone() => DateTime.fromMillisecondsSinceEpoch(
-        millisecondsSinceEpoch,
+  DateTime clone() => DateTime.fromMicrosecondsSinceEpoch(
+        microsecondsSinceEpoch,
         isUtc: isUtc,
       );
+
+  /// Moves this date by [days] calendar days, keeping the wall-clock time
+  /// even across daylight saving time transitions.
+  DateTime _addCalendarDays(int days) =>
+      days == 0 ? this : copyWith(day: day + days);
 
   /// Returns the start of the specified unit of time.
   DateTime startOf(Unit unit) {
@@ -208,11 +230,8 @@ extension DateTimeExtensions on DateTime {
           microsecond: 0,
         );
       case Unit.week:
-        final newDate = subtract(Duration(days: dayOfWeek - 1));
         newDateTime = copyWith(
-          year: newDate.year,
-          month: newDate.month,
-          day: newDate.day,
+          day: day - (dayOfWeek - 1),
           hour: 0,
           minute: 0,
           second: 0,
@@ -281,11 +300,8 @@ extension DateTimeExtensions on DateTime {
           microsecond: 999,
         );
       case Unit.week:
-        final newDate = add(Duration(days: DateTime.daysPerWeek - dayOfWeek));
         newDateTime = copyWith(
-          year: newDate.year,
-          month: newDate.month,
-          day: newDate.day,
+          day: day + (DateTime.daysPerWeek - dayOfWeek),
           hour: 23,
           minute: 59,
           second: 59,
@@ -317,6 +333,10 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Subtracts the specified duration from the DateTime.
+  ///
+  /// Days and weeks are calendar days, so the wall-clock time is kept across
+  /// daylight saving time transitions. Months and years are clamped to the
+  /// last day of the resulting month.
   DateTime subtractDate({
     int microseconds = 0,
     int milliseconds = 0,
@@ -328,9 +348,8 @@ extension DateTimeExtensions on DateTime {
     int months = 0,
     int years = 0,
   }) {
-    var newDateTime = subtract(
+    var newDateTime = _addCalendarDays(-(days + (weeks * 7))).subtract(
       Duration(
-        days: days + (weeks * 7),
         hours: hours,
         minutes: minutes,
         seconds: seconds,
@@ -343,7 +362,7 @@ extension DateTimeExtensions on DateTime {
     return newDateTime;
   }
 
-  /// Adds an amount of years to this [DateTime]
+  /// Subtracts an amount of years from this [DateTime]
   DateTime subYears(int amount) => subtractDate(years: amount);
 
   /// Subtracts an amount of months from this [DateTime]
@@ -373,6 +392,10 @@ extension DateTimeExtensions on DateTime {
       subtract(Duration(microseconds: amount));
 
   /// Adds the specified duration to the DateTime.
+  ///
+  /// Days and weeks are calendar days, so the wall-clock time is kept across
+  /// daylight saving time transitions. Months and years are clamped to the
+  /// last day of the resulting month.
   DateTime addDate({
     int microseconds = 0,
     int milliseconds = 0,
@@ -384,9 +407,8 @@ extension DateTimeExtensions on DateTime {
     int months = 0,
     int years = 0,
   }) {
-    var newDateTime = add(
+    var newDateTime = _addCalendarDays(days + (weeks * 7)).add(
       Duration(
-        days: days + (weeks * 7),
         hours: hours,
         minutes: minutes,
         seconds: seconds,
@@ -457,10 +479,13 @@ extension DateTimeExtensions on DateTime {
         diff = diffMicrosecondsSinceEpoch / Duration.microsecondsPerHour;
 
       case Unit.day:
-        diff = diffMicrosecondsSinceEpoch / Duration.microsecondsPerDay;
+        diff = _calendarMicroseconds(other, diffMicrosecondsSinceEpoch) /
+            Duration.microsecondsPerDay;
 
       case Unit.week:
-        diff = (diffMicrosecondsSinceEpoch / Duration.microsecondsPerDay) / 7;
+        diff = _calendarMicroseconds(other, diffMicrosecondsSinceEpoch) /
+            Duration.microsecondsPerDay /
+            DateTime.daysPerWeek;
 
       case Unit.month:
         diff = DateTimeUtils.monthDiff(this, other);
@@ -475,6 +500,13 @@ extension DateTimeExtensions on DateTime {
             ? diff.ceil()
             : diff.floor();
   }
+
+  /// Returns [elapsedMicroseconds] corrected by the change in time zone
+  /// offset, so that day and week differences count calendar days across
+  /// daylight saving time transitions.
+  int _calendarMicroseconds(DateTime other, int elapsedMicroseconds) =>
+      elapsedMicroseconds +
+      (timeZoneOffset - other.timeZoneOffset).inMicroseconds;
 
   /// Returns the difference between two DateTime objects in years.
   num diffInYears(DateTime other, {bool asFloat = false}) {
@@ -506,7 +538,7 @@ extension DateTimeExtensions on DateTime {
     return diff(other, unit: Unit.minute, asFloat: asFloat);
   }
 
-  ///
+  /// Returns the difference between two DateTime objects in seconds.
   num diffInSeconds(DateTime other, {bool asFloat = false}) {
     return diff(other, unit: Unit.second, asFloat: asFloat);
   }

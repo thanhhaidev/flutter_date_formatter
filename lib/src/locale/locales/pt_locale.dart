@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Portuguese-Brazil locale
-class PtLocale extends Locale {
+class PtLocale extends DateFormatterLocale {
   @override
   String code() => 'pt';
 
@@ -16,6 +16,15 @@ class PtLocale extends Locale {
 
   @override
   RelativeDateTime shortRelativeDateTime() => PtShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => PtCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => PtDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => PtShortDurationUnits();
 }
 
 /// Portuguese-Brazil relative date time
@@ -88,4 +97,73 @@ class PtShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years anos';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Portuguese-Brazil calendar date time
+class PtCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Hoje às $time';
+  @override
+  String nextDay(String time) => 'Amanhã às $time';
+  @override
+  String lastDay(String time) => 'Ontem às $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      '${_capitalize(weekday)} às $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) {
+    // "sábado" and "domingo" are masculine, the "-feira" days feminine.
+    final isMasculine =
+        date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
+    return '${isMasculine ? 'Último' : 'Última'} $weekday às $time';
+  }
+
+  String _capitalize(String s) =>
+      s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}';
+}
+
+/// Portuguese-Brazil duration units.
+///
+/// CLDR uses the singular for 0 and 1 in Portuguese.
+class PtDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) =>
+      seconds == 1 ? '$seconds segundo' : '$seconds segundos';
+  @override
+  String minutes(int minutes) =>
+      minutes == 1 ? '$minutes minuto' : '$minutes minutos';
+  @override
+  String hours(int hours) => hours == 1 ? '$hours hora' : '$hours horas';
+  @override
+  String days(int days) => days == 1 ? '$days dia' : '$days dias';
+  @override
+  String weeks(int weeks) => weeks == 1 ? '$weeks semana' : '$weeks semanas';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Portuguese-Brazil short duration units
+class PtShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds s';
+  @override
+  String minutes(int minutes) => '$minutes min';
+  @override
+  String hours(int hours) => '$hours h';
+  @override
+  String days(int days) => '$days d';
+  @override
+  String weeks(int weeks) => '$weeks sem.';
+  @override
+  String delimiter() => ' ';
 }

@@ -1,7 +1,7 @@
 import 'package:flutter_date_formatter/src/models/models.dart';
 
 /// Mongolian Locale
-class MnLocale extends Locale {
+class MnLocale extends DateFormatterLocale {
   @override
   String code() => 'mn';
 
@@ -9,13 +9,22 @@ class MnLocale extends Locale {
   String ordinal(int n) => '';
 
   @override
-  String ordinalNumber(int n) => '${n}th';
+  String ordinalNumber(int n) => '$n-р';
 
   @override
   RelativeDateTime relativeDateTime() => MnRelativeDateTime();
 
   @override
   RelativeDateTime shortRelativeDateTime() => MnShortRelativeDateTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => MnCalendarDateTime();
+
+  @override
+  DurationUnits durationUnits() => MnDurationUnits();
+
+  @override
+  DurationUnits shortDurationUnits() => MnShortDurationUnits();
 }
 
 /// Mongolian relative date time
@@ -88,4 +97,62 @@ class MnShortRelativeDateTime implements RelativeDateTime {
   String years(int years) => '$years ж';
   @override
   String wordSeparator() => ' ';
+}
+
+/// Mongolian calendar date time
+class MnCalendarDateTime implements CalendarDateTime {
+  @override
+  String sameDay(String time) => 'Өнөөдөр $time';
+  @override
+  String nextDay(String time) => 'Маргааш $time';
+  @override
+  String lastDay(String time) => 'Өчигдөр $time';
+  @override
+  String nextWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Ирэх $weekday $time';
+  @override
+  String lastWeek(
+    DateTime date,
+    String weekday,
+    String time, {
+    bool isSameWeek = false,
+  }) =>
+      'Өнгөрсөн $weekday $time';
+}
+
+/// Mongolian duration units
+class MnDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds секунд';
+  @override
+  String minutes(int minutes) => '$minutes минут';
+  @override
+  String hours(int hours) => '$hours цаг';
+  @override
+  String days(int days) => '$days өдөр';
+  @override
+  String weeks(int weeks) => '$weeks долоо хоног';
+  @override
+  String delimiter() => ' ';
+}
+
+/// Mongolian short duration units
+class MnShortDurationUnits implements DurationUnits {
+  @override
+  String seconds(int seconds) => '$seconds сек';
+  @override
+  String minutes(int minutes) => '$minutes мин';
+  @override
+  String hours(int hours) => '$hours ц';
+  @override
+  String days(int days) => '$days өдөр';
+  @override
+  String weeks(int weeks) => '$weeks долоо хоног';
+  @override
+  String delimiter() => ' ';
 }

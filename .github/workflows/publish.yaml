@@ -1,19 +1,61 @@
-name: Publish to pub.dev
+name: Release
 
+# Push a tag such as v0.1.0 to publish that version to pub.dev and redeploy the
+# docs. See RELEASING.md.
 on:
   push:
     tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  publish:
-    permissions:
-      id-token: write
+  verify:
+    name: Verify release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Tag matches pubspec version and CHANGELOG
+        run: |
+          version=$(sed -n 's/^version: *//p' pubspec.yaml)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match pubspec.yaml version $version"
+            exit 1
+          fi
+          if ! grep -q "^## $version\$" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## $version' section"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Validate package
+        run: dart pub publish --dry-run
+
+  ci:
+    needs: verify
+    uses: ./.github/workflows/ci.yaml
+
+  publish:
+    name: Publish to pub.dev
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # pub.dev automated publishing (OIDC), no token needed
+    steps:
+      - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
       - name: Install dependencies
         run: dart pub get
       - name: Publish
         run: dart pub publish --force
+
+  docs:
+    name: Deploy docs
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yaml

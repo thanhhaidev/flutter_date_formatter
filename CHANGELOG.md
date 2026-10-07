@@ -1,3 +1,42 @@
+## 0.1.0
+
+### **Fixed**:
+
+- Literal text in `intl` quotes works in patterns: `dd/MM/yyyy 'at' HH:mm` now gives `07/10/2025 at 09:35` instead of `07/10/2025 'AMt' 09:35`. `''` is a literal apostrophe, and `[text]` keeps working (an apostrophe inside brackets stays literal).
+- `FlutterDateFormatter` instances can be reused; the second `format()` call no longer throws `LateInitializationError`.
+- Formatting works without calling `initializeDateFormatting()` first, keeps the requested region (`en_GB`, `pt_BR`), and throws a `FormatException` for a blank pattern.
+- Locale lookup accepts any case and BCP-47 tags (`zh-cn`, `pt-BR`), uses the full `Intl.defaultLocale`, and falls back to the language code.
+- `registerLocale` now also affects relative formatting; `isLocaleSupported` works for region-qualified codes.
+- Registered `sk`, `ms`, `el` (Greek, `gr` kept as alias), `zh_TW` and `zh_HK`; removed the `mn_MY` typo.
+- Week APIs (`dayOfWeek`, `startOfWeek`, `weekOfYear`, ...) no longer throw for locales such as `de_DE`, `vi_VN`, `en-US` or `C`.
+- `weekOfYear` now returns the ISO-8601 week number.
+- Day and week arithmetic, `startOf/endOf(Unit.week)`, `isYesterday`/`isTomorrow` and `diff` in days/weeks are correct across daylight saving time.
+- `startOfQuarter`/`endOfQuarter` no longer overflow into the wrong month; `clone()` keeps microseconds; `indexOfClosestDay` compares at microsecond resolution.
+- `TimeSpan`: fixed `intersects`, `merge`, `getDifference` and `symmetricDifference`; added `getDifferences`, `==`, `hashCode` and `toString`.
+- Relative time: equal dates are formatted as past, and values just below a threshold no longer show the next bucket's number (e.g. "45 minutes", "12 months").
+- Translation, plural and ordinal fixes in about 35 locales, including ar, az, be, bn, bs, cs, de, el, fr, hi, hr, hu, ku, lv, my, pl, ro, ru, sk, sr, sv, th, ko and zh.
+
+### **Added**:
+
+- `DateFormatterConfig.configure` for a default locale, a start-of-week override and an injectable clock used by every "now"-dependent API (`isToday`, `formatFromNow`, ...).
+- Calendar-style formatting: `formatCalendar` ("Today at 3:00 PM", "Yesterday at …", "Last Monday at …") with locale strings for all supported locales, ported from moment.js and checked against CLDR. Weekdays are worded relative to the current week of the locale (e.g. `本周三` / `上周三`).
+- Duration humanization: `Duration.humanize` / `FlutterDateFormatter.formatDuration` ("2 hours 5 minutes", "2h 5m") with `maxUnits`, unit limits and locale strings.
+- Parsing: `FlutterDateFormatter.parse` and `tryParse`, using the same pattern syntax as `format` (including `do` ordinals), with `strict` and `utc` options.
+- Ranges: `DateTime.rangeTo` and `TimeSpan.iterate` (calendar steps, DST-safe); comparison helpers `clamp`, `earliest` and `latest`.
+- Optional locale hooks `calendarDateTime()`, `durationUnits()` and `shortDurationUnits()` on `DateFormatterLocale`, falling back to English.
+- `DirectionalRelativeDateTime`, an optional interface for locales whose unit texts depend on the direction (past or future). Czech and Slovak use it.
+- `TimeSpan.getDifferences`, which returns every remaining part, and `const TimeSpan.fromStart`.
+- `pubspec.yaml`: `repository`, `issue_tracker` and `topics`.
+
+### **Changed**:
+
+- Lint rules now follow `very_good_analysis` 7.0.0, and CI fails on infos.
+- CI also runs the tests in a time zone with daylight saving time and analyzes with the lowest supported dependencies; publishing runs CI first.
+
+### **Deprecated**:
+
+- `Locale` is renamed to `DateFormatterLocale` to avoid clashing with Flutter's `Locale`. The old name remains as a deprecated typedef.
+
 ## 0.0.9
 
 ### **Added**:
@@ -5,6 +44,10 @@
 - **DateTime Extension: Closest Day and TimeSpan Support**:
   - Added `indexOfClosestDay` and `closestDayTo` methods to `DateTime` extension.
   - These methods allow finding the closest day to a given `DateTime` from an iterable of `DateTime` objects.
+  - Added the `TimeSpan` class: `fromStart`, `fromEnd` and `fromCenter` constructors, `start`, `end`, `middle` and `totalDuration`, the `with*` copy methods, `contains`, `containsTimeSpan`, `intersects`, `isSame`, `isBefore`/`isAfter` (and `OrSame` variants), `merge`, `getIntersection`, `getDifference` and `symmetricDifference`.
+  - Added `isWithin` and `isWithinTimeSpan` to `DateTime`.
+- **DateTime Extension: Quarters**:
+  - Added `startOfQuarter` and `endOfQuarter`.
 - **DateTime Extension: Diff and Clone Methods**:
 
   - Added `diffInDays`, `diffInSeconds`, and `clone` methods to `DateTime` extension.

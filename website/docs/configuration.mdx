@@ -1,0 +1,53 @@
+---
+title: Configuration
+description: Default locale, first day of the week and an injectable clock.
+---
+
+# Configuration
+
+`DateFormatterConfig` sets package-wide defaults: the locale used when a call passes none, the first day of the week, and the clock used as "now".
+
+## DateFormatterConfig
+
+```dart
+DateFormatterConfig.configure(
+  locale: 'vi',
+  startOfWeek: StartOfWeek.monday,
+  clock: () => DateTime(2025, 3, 10, 12),
+);
+
+DateFormatterConfig.locale;  // 'vi'
+DateFormatterConfig.now();   // the configured clock
+DateFormatterConfig.reset(); // back to the defaults
+```
+
+`configure` only changes the settings you pass and keeps the others.
+
+| Setting | Default | Used by |
+| --- | --- | --- |
+| `locale` | `Intl.defaultLocale` | every API that takes a `locale` |
+| `startOfWeek` | locale data | `startOfWeek`, `dayOfWeek`, `formatCalendar` |
+| `clock` | `DateTime.now` | `isToday`, `isPast`, `formatFromNow`, `formatCalendar`, … |
+
+:::tip[The dark bar is DateFormatterConfig]
+The **locale**, **now** and **week starts** controls above every example on this site do exactly this: they configure the package before each call.
+:::
+
+## Testing with a fixed clock
+
+Every "now"-dependent API reads the configured clock, so tests don't depend on the real time.
+
+```dart
+test('shows yesterday', () {
+  DateFormatterConfig.configure(clock: () => DateTime(2025, 3, 10, 12));
+  addTearDown(DateFormatterConfig.reset);
+
+  expect(DateTime(2025, 3, 9).isYesterday, isTrue);
+  expect(DateTime(2025, 3, 10, 9).formatFromNow(), '3 hours ago');
+  expect(DateTime(2025, 3, 9, 15).formatCalendar(), 'Yesterday at 3:00 PM');
+});
+```
+
+## First day of the week
+
+Without an override, the first day of the week comes from the `intl` data of the locale: Sunday for `en_US`, Monday for `de` or `vi`, Saturday for `fa`. Region tags such as `de_DE` or `en-US` fall back to their language.
