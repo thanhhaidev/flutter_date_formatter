@@ -1,0 +1,22 @@
+---
+title: Durations
+description: Humanize a Duration as "2 hours 5 minutes" or "2h 5m".
+---
+
+# Durations
+
+`Duration.humanize` turns a `Duration` into text such as "1 day 2 hours" or "1d 2h 5m", with the correct plural forms in every locale. The `short` form uses locale-specific compact units; for Vietnamese, for example, `1 ngày 2 giờ` becomes `1n 2g`.
+
+## Duration.humanize
+
+Units with a zero count are skipped, and the rest is truncated after `maxUnits`. `largestUnit` and `smallestUnit` limit the units used, from `Unit.week` down to `Unit.second`.
+
+<DurationDemo />
+
+`FlutterDateFormatter.formatDuration(duration, …)` is the same function as a static method.
+
+## Plural forms
+
+Each locale has standalone (nominative) unit forms with full CLDR plural rules, checked against the Unicode CLDR data: German "5 Tage", Russian "1 минута / 2 минуты / 5 минут", Latvian "11 minūšu".
+
+<PluralDemo />

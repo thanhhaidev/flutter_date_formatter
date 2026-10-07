@@ -1,0 +1,32 @@
+---
+title: Locales
+description: Every supported locale side by side, with lookup and fallback rules.
+---
+
+# Locales
+
+Every locale below runs live. Click a row to use that locale in every example on the site.
+
+## Gallery
+
+<LocaleGallery />
+
+<small>* `intl` has no date data for this locale: pattern formatting falls back to English, while relative, calendar and duration strings are localized.</small>
+
+The gallery is also a capability table: the `do MMMM yyyy` column shows native
+`intl` pattern support, while the relative, calendar, duration and ordinal
+columns show the localized hooks available to the formatter. A `*` beside the
+locale code means pattern formatting uses the English fallback.
+
+## Lookup rules
+
+- Codes are case-insensitive and accept BCP-47 tags: `zh-cn`, `ZH_CN` and `zh_CN` are the same.
+- An unknown region falls back to its language (`vi_VN` → `vi`), then to English.
+- When a call passes no locale, [`DateFormatterConfig.locale`](./configuration.mdx) is used, then `Intl.defaultLocale`.
+- `format` keeps the requested region for `intl` (`en_GB`, `pt_BR`) when `intl` has data for it.
+
+```dart
+SupportedLocalesUtils.getSupportedLocales();         // pattern + relative
+SupportedLocalesUtils.getSupportedRelativeLocales(); // also relative-only locales
+SupportedLocalesUtils.isLocaleSupported('de_DE');    // true
+```

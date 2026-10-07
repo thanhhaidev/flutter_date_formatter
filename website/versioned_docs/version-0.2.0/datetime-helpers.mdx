@@ -1,0 +1,26 @@
+---
+title: DateTime helpers
+description: Calendar facts, start and end of units, DST-safe arithmetic and comparisons.
+---
+
+# DateTime helpers
+
+Extension getters and methods on `DateTime`: calendar facts, the start and end of any unit, DST-safe arithmetic, differences and comparisons.
+
+## Properties
+
+<PropertiesDemo />
+
+`weekOfYear` is the ISO-8601 week number (weeks start on Monday, week 1 holds the first Thursday). `dayOfWeek` and `startOfWeek` follow the locale's first day of the week.
+
+## Arithmetic
+
+Days, weeks, months and years are calendar steps: the wall-clock time survives daylight saving time changes, and January 31 plus one month is February 28.
+
+<ArithmeticDemo />
+
+## Differences and comparisons
+
+`diff` in days and weeks counts calendar days across DST. Comparisons accept a `unit` granularity: `isSame(other, unit: Unit.month)` is true for any two dates in the same month.
+
+<CompareDemo />

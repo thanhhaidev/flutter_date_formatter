@@ -1,0 +1,65 @@
+---
+title: Custom locales
+description: Override strings of a built-in locale or add a new one.
+---
+
+# Custom locales
+
+Register a locale under any code to add a language or replace the strings of a built-in one. A registered locale is used for pattern, relative, calendar and duration formatting.
+
+## Extend a built-in locale
+
+To change only a few strings, extend the built-in class and override what you need.
+
+```dart
+class MyVietnamese extends ViLocale {
+  @override
+  String ordinalNumber(int n) => 'ngày thứ $n';
+}
+
+SupportedLocalesUtils.registerLocale('vi', MyVietnamese());
+```
+
+## Add a new locale
+
+Extend `DateFormatterLocale`. Calendar and duration strings are optional; without them those APIs use English.
+
+```dart
+class MyLocale extends DateFormatterLocale {
+  @override
+  String code() => 'xx';
+
+  @override
+  String ordinal(int n) => '.';
+
+  @override
+  String ordinalNumber(int n) => '$n.';
+
+  @override
+  RelativeDateTime relativeDateTime() => MyRelativeTime();
+
+  @override
+  RelativeDateTime shortRelativeDateTime() => MyShortRelativeTime();
+
+  @override
+  CalendarDateTime calendarDateTime() => MyCalendar(); // optional
+
+  @override
+  DurationUnits durationUnits() => MyDurationUnits(); // optional
+}
+
+SupportedLocalesUtils.registerLocale('xx', MyLocale());
+```
+
+## Interfaces
+
+| Interface | Strings |
+| --- | --- |
+| `RelativeDateTime` | prefixes, suffixes and units of relative times ("5 minutes ago") |
+| `DirectionalRelativeDateTime` | optional: different unit forms for past and future (Czech, Slovak) |
+| `CalendarDateTime` | today, tomorrow, yesterday, next/last weekday; receives `isSameWeek` |
+| `DurationUnits` | standalone unit forms for humanized durations |
+
+:::info[Flutter users]
+The base class used to be called `Locale`, which clashed with Flutter's `Locale`. It is now `DateFormatterLocale`; the old name remains as a deprecated typedef.
+:::

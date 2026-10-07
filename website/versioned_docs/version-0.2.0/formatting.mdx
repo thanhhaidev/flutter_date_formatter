@@ -1,0 +1,65 @@
+---
+title: Formatting
+sidebar_label: Patterns
+description: Format dates with intl patterns, ordinal days and literal text.
+---
+
+# Formatting
+
+Format a `DateTime` with an `intl` pattern, plus two extras: `do` for the day of the month with its ordinal suffix (1st, 2nd, 1er, 2.) and `[...]` for literal text. Literal text in `intl` quotes (`'at'`) works too.
+
+## Pattern formatting
+
+`DateTime.format` and `FlutterDateFormatter.format` give the same result. A `FlutterDateFormatter` can be kept and reused for any number of dates.
+
+<FormatDemo />
+
+## Ordinal numbers
+
+`FlutterDateFormatter.ordinal` and `formatOrdinalNumber` follow the rules of each locale.
+
+<OrdinalDemo />
+
+## Date ranges
+
+<DateRangeDemo />
+
+Use `formatRange` for a localized range with the locale's default date
+pattern. The optional `pattern` uses the same syntax as `format`, including
+ordinal days and literal text.
+
+```dart
+final start = DateTime(2025, 3, 1);
+final end = DateTime(2025, 3, 5);
+
+start.formatRange(end); // Mar 1–5, 2025
+start.formatRange(end, locale: 'vi');
+start.formatRange(end, pattern: 'do MMMM yyyy');
+```
+
+The equivalent static API is
+`FlutterDateFormatter.formatDateTimeRange(start, end)`. Endpoints in the same
+month and year are compacted when using the default pattern; endpoints on the
+same calendar day are formatted once. An end before the start throws an
+`ArgumentError`.
+
+## Pattern cheat sheet
+
+| Token | Meaning |
+| --- | --- |
+| `do` | Day with ordinal suffix: 1st, 2nd *(package extension)* |
+| `[text]` | Literal text, e.g. `[Today is] EEEE` *(package extension)* |
+| `'text'` | Literal text, as in `intl`: `dd/MM/yyyy 'at' HH:mm`; `''` is an apostrophe |
+| `d` / `dd` | Day of month: 5 / 05 |
+| `E` / `EEEE` | Weekday: Wed / Wednesday |
+| `M` / `MM` / `MMM` / `MMMM` | Month: 3 / 03 / Mar / March |
+| `y` / `yy` / `yyyy` | Year: 2025 / 25 / 2025 |
+| `Q` / `QQQ` / `QQQQ` | Quarter: 1 / Q1 / 1st quarter |
+| `H` / `HH`, `h` / `hh` | Hour 0-23, hour 1-12 |
+| `m` / `mm`, `s` / `ss` | Minutes, seconds |
+| `a` | AM/PM marker |
+| `yMd`, `yMMMd`, `jm`, `Hm` … | `intl` skeletons: locale-aware formats |
+
+:::info[Regions are kept]
+`format(pattern: 'yMd', locale: 'en_GB')` gives `04/03/2025`, while `en_US` gives `3/4/2025`. Locale codes are case-insensitive and accept BCP-47 tags such as `pt-BR`.
+:::
